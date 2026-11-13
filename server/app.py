@@ -144,11 +144,12 @@ def status(owner: bool = Depends(is_owner)):
     online, phone, device, seen = _runner_online()
     active = _active_run()
     return {
-        "runner_online": online and owner,
-        "phone_online": phone and owner,
-        "device": device if owner else None,
+        "runner_online": online,          # anyone may WATCH the live run
+        "phone_online": phone,
+        "device": device,
         "last_seen": seen,
-        "active_run": active["id"] if (active and owner) else None,
+        "active_run": active["id"] if active else None,
+        "owner": owner,                   # only the owner may START or APPROVE
         "has_recording": _recording() is not None,
     }
 

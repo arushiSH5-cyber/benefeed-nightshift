@@ -42,6 +42,7 @@ export const Status = z.object({
   last_seen: z.number().nullable().optional(),
   active_run: z.string().nullable().optional(),
   has_recording: z.boolean(),
+  owner: z.boolean().optional(),
 });
 
 export type StepT = z.infer<typeof Step>;

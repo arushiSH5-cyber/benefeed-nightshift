@@ -232,7 +232,8 @@ async function runLive() {
 export async function runNight() {
   if (S.on) return;
   await refreshStatus();
-  if (S.mode === "live") {
+  if (S.mode === "live" && S.status?.active_run) { await resume(); return; }  // someone's run is live: watch it
+  if (S.mode === "live" && S.status?.owner !== false) {
     try { await runLive(); return; } catch { notify("The phone isn't reachable. Showing a replay"); set({ mode: "replay" }); }
   }
   await runReplay();
@@ -276,7 +277,9 @@ export const doneN = () => TASKS.filter((t) => S.st[t.id] === "done").length;
 /** Open the latest live run if we come back to the app mid-run (or from a push). */
 export async function resume() {
   await refreshStatus();
-  if (S.mode === "live" && S.runId) {
-    try { applyRun(await api(`/api/runs/${encodeURIComponent(S.runId)}`, undefined, (j) => Run.parse(j))); startPolling(S.runId); } catch { /* old run gone */ }
+  const id = S.status?.active_run || S.runId;
+  if (S.mode === "live" && id) {
+    set({ runId: id });
+    try { applyRun(await api(`/api/runs/${encodeURIComponent(id)}`, undefined, (j) => Run.parse(j))); startPolling(id); } catch { /* old run gone */ }
   }
 }
