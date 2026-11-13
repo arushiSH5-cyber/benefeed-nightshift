@@ -1,0 +1,16 @@
+// Draws the app icons from Pip. Run: node scripts/icons.mjs
+import sharp from "sharp";
+import { writeFileSync } from "node:fs";
+const INK = "#45405a";
+const pip = (pad) => `<g transform="translate(${pad} ${pad}) scale(${(120 - pad * 2) / 120})"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M60 22c26 0 42 18 42 42 0 22-17 34-42 34S18 86 18 64c0-24 16-42 42-42z" fill="#fff"/>
+<path d="M20 78c4-10 12-15 19-14-2 10-8 17-19 20z" fill="#e6e4ea" stroke-width="2.4"/><path d="M100 78c-4-10-12-15-19-14 2 10 8 17 19 20z" fill="#e6e4ea" stroke-width="2.4"/>
+<path d="M50 98l-2 9M70 98l2 9" fill="none" stroke-width="2.8"/><path d="M56 22c-2-6 2-10 6-9" fill="none" stroke-width="2.4"/>
+<circle cx="51" cy="58" r="4" fill="${INK}" stroke="none"/><circle cx="69" cy="58" r="4" fill="${INK}" stroke="none"/><circle cx="52.4" cy="56.6" r="1.3" fill="#fff" stroke="none"/><circle cx="70.4" cy="56.6" r="1.3" fill="#fff" stroke="none"/>
+<path d="M57.5 64.5h5l-2.5 3.2z" fill="${INK}" stroke-width="1.4"/>
+<ellipse cx="42" cy="68" rx="6" ry="3.6" fill="#efb5b5" opacity=".75" stroke="none"/><ellipse cx="78" cy="68" rx="6" ry="3.6" fill="#efb5b5" opacity=".75" stroke="none"/></g></g>`;
+const svg = (pad, round) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" ${round ? 'rx="26"' : ""} fill="#e4e9f2"/>${pip(pad)}</svg>`;
+writeFileSync("public/icons/pip.svg", svg(6, true));
+const out = [["icon-192.png", 192, 6, true], ["icon-512.png", 512, 6, true], ["maskable-512.png", 512, 22, false], ["apple-touch-icon.png", 180, 10, false]];
+for (const [f, s, pad, round] of out) await sharp(Buffer.from(svg(pad, round))).resize(s, s).png().toFile("public/icons/" + f);
+console.log("icons ok");
