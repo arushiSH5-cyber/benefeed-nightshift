@@ -518,7 +518,7 @@ function Review({ ns, only, close, go, openSheet, toast }: { ns: ReturnType<type
             {t.need && <div className="need">{t.need}</div>}
             <div className="acts">
               {ready ? <>
-                <button className="btn" onClick={() => { close(); go("crew"); NS.decide(t.id, true); }}>Yes, {t.stop.toLowerCase()} it</button>
+                <Hold label={`Hold to ${t.stop.toLowerCase()}`} onDone={() => { close(); go("crew"); NS.decide(t.id, true); }} />
                 <button className="btn ghost" onClick={() => openSheet({ k: "change", id: t.id })}>Change</button>
                 <button className="btn ghost" onClick={() => { NS.decide(t.id, false); close(); }}>Skip</button>
               </> : <StPill s={ns.st[t.id]} />}
@@ -623,5 +623,29 @@ function Me({ u, s, M, found, saveU, retake, toast }: { u: U; s: SS; M: Match[];
       }}>Erase everything</button>
       <button className="btn ghost" onClick={retake}>Retake the quiz</button>
     </section>
+  );
+}
+
+/** Hold-to-approve: a final tap needs a deliberate 1.2 s press, so a stray tap can't submit anything. */
+function Hold({ label, onDone }: { label: string; onDone: () => void }) {
+  const [p, setP] = useState(0);
+  const raf = useRef(0);
+  const start = () => {
+    const t0 = performance.now();
+    const f = (now: number) => {
+      const k = Math.min(1, (now - t0) / 1200);
+      setP(k);
+      if (k >= 1) { navigator.vibrate?.(30); cheer(); onDone(); return; }
+      raf.current = requestAnimationFrame(f);
+    };
+    raf.current = requestAnimationFrame(f);
+  };
+  const cancel = () => { cancelAnimationFrame(raf.current); setP(0); };
+  return (
+    <button className="btn hold" style={{ ["--p" as string]: p }} aria-label={label + " (press and hold)"}
+      onPointerDown={start} onPointerUp={cancel} onPointerLeave={cancel} onContextMenu={(e) => e.preventDefault()}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDone(); } }}>
+      {p > 0 && p < 1 ? "Keep holding…" : label}
+    </button>
   );
 }

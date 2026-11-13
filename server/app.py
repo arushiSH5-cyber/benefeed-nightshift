@@ -22,12 +22,14 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from shared.models import TASK_IDS, Approval, Run, Step, TaskState
 
 from . import db
+from .practice import router as practice_router
 
 ROOT = Path(__file__).resolve().parent.parent
 DIST = ROOT / "web" / "dist"
 RUNNER_ONLINE_S = 20
 
 app = FastAPI(title="Benefeed Night Shift", docs_url=None, redoc_url=None)
+app.include_router(practice_router)
 
 
 # ---------- limits ----------

@@ -312,3 +312,4 @@ html.night .phone{background:#262f55;box-shadow:0 0 0 1px #3a4577,0 18px 40px -2
 .a2hs svg{width:44px;height:44px}
 .qr{display:grid;justify-items:center;gap:6px}
 .qr img{width:150px;height:150px;border-radius:12px;background:#fff;padding:8px}
+.btn.hold{position:relative;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;background:linear-gradient(90deg,var(--accentSh) calc(var(--p)*100%),var(--accent) 0)}
