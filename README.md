@@ -29,6 +29,12 @@ NCOA estimates **9.1M older adults miss about $58B a year** in benefits they alr
 
 In the morning you see a **sunrise**, a notification and one card: *"Your crew got 3 things ready."* Swipe through the filmstrip of real screenshots and **hold to approve**. Only then does the crew tap Submit, Add or Send.
 
+## 🎬 Demo videos
+▶ **[Watch the demo (English, 21 s)](docs/demo-en.mp4)** · ▶ **[Voir la démo (Français, 18 s)](docs/demo-fr.mp4)**
+
+## 🇫🇷 En français
+Tap **FR** in the top bar and the whole app switches to French: onboarding, the crew, the hard stop ("🔒 attend votre oui"), the morning card and the review. It also follows the phone's language automatically. *Note: the demo programs are Californian (CalFresh, Medi-Cal); a France pack (CAF, APL, RSA, prime d'activité) is next on the roadmap.*
+
 ## 📸 Every screen
 | 1. Hi, I'm Pip | 2. Three questions | 3. The crew finds your help |
 |:-:|:-:|:-:|
@@ -54,7 +60,7 @@ The same crew, guard and approval flow work for any form-heavy chore on a phone:
 - **Renewals on autopilot:** Medi-Cal, SNAP recertification and Lifeline each year. Nimbus watches the deadline, Bun pre-fills, and you say yes.
 - **More programs:** WIC, LIHEAP energy help, Extra Help for Medicare drugs and free tax filing (VITA).
 - **Caregiver mode:** a daughter approves from her phone; the helper sees the plan, never the answers.
-- **Languages:** Spanish first, with the voice briefing in your language.
+- **Languages and countries:** French and English today. Next: Spanish, and country packs (France: CAF, APL, RSA, prime d'activité via official service-public.fr sources).
 - **Any phone:** PhoneUse cloud phones today, your own phone over USB or the cloud tomorrow.
 
 ## Try it in 30 seconds

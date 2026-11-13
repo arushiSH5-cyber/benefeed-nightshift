@@ -6,6 +6,7 @@ import type { Comment, Post, Program } from "./types";
 import { Phone } from "./Phone";
 import * as NS from "./nightshift";
 import { readEls, say, stopRead } from "./speech";
+import { getLang, setLang } from "./i18n";
 
 /* ---------- tiny helpers ---------- */
 const I = ({ h, className, style }: { h: string; className?: string; style?: React.CSSProperties }) => (
@@ -77,6 +78,8 @@ export default function App() {
   const [playing, setPlaying] = useState(false);
   const [onbStep, setOnbStep] = useState<number | null>(() => (store.get<U>("u", DEF_U).done ? null : 0));
   const ns = NS.useNS();
+  const [, setLangTick] = useState(0);
+  useEffect(() => { if (getLang() === "fr") setLang("fr"); }, []);
   const toastT = useRef(0);
 
   const toast = useCallback((m: string) => {
@@ -161,6 +164,7 @@ export default function App() {
               <I h={playing ? IC.pause : IC.play} style={{ display: "grid" }} />
             </button>
           )}
+          <button className="ib" aria-label="Langue / Language" style={{ fontFamily: "var(--disp)", fontWeight: 700, fontSize: 14 }} onClick={() => { const l = getLang() === "fr" ? "en" : "fr"; setLang(l); setLangTick((x) => x + 1); }}>{getLang() === "fr" ? "EN" : "FR"}</button>
           <button className="ib" aria-label="How Night Shift works" style={{ fontFamily: "var(--disp)", fontWeight: 700, fontSize: 18 }} onClick={() => openSheet({ k: "how" })}>?</button>
           <button className="ib" aria-label="Switch day and night" onClick={() => saveU({ night: !u.night })}><I h={u.night ? IC.sun : IC.moon} style={{ display: "grid" }} /></button>
         </header>
