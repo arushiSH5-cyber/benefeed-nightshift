@@ -30,6 +30,11 @@ RUNNER_ONLINE_S = 20
 
 app = FastAPI(title="Benefeed Night Shift", docs_url=None, redoc_url=None)
 app.include_router(practice_router)
+from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
+_origins = [o for o in os.environ.get("ALLOWED_ORIGINS", "").split(",") if o]
+if _origins:  # e.g. https://benefeed-nightshift.vercel.app
+    app.add_middleware(CORSMiddleware, allow_origins=_origins, allow_methods=["GET", "POST"],
+                       allow_headers=["Content-Type", "X-Owner-Token"])
 from .extras import fern_check, router as extras_router, send_morning  # noqa: E402
 app.include_router(extras_router)
 

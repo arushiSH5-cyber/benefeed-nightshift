@@ -29,7 +29,7 @@ function scr(k: string, d: any = {}) {
 export function Phone({ screen, sm, badge }: { screen: Screen; sm?: boolean; badge?: string }) {
   const body =
     "shot" in screen ? (
-      <div className="ps shot"><img src={screen.shot} alt="Screenshot of the iPhone" loading="lazy" /></div>
+      <div className="ps shot"><img src={(import.meta.env.VITE_API_BASE || "").replace(/\/$/, "") + screen.shot} alt="Screenshot of the iPhone" loading="lazy" /></div>
     ) : (
       <div className="ps" dangerouslySetInnerHTML={{ __html: scr(screen.mock[0], screen.mock[1]) }} />
     );
