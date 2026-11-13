@@ -17,6 +17,17 @@
 </head>
 <body>
 <div id="root"></div>
+<script>
+// Self-heal: if the app script fails to load (stale cache after a deploy) or the app never mounts,
+// drop the service worker + caches and reload once.
+(function(){
+  function heal(){ if (sessionStorage.getItem("bf_healed")) return; sessionStorage.setItem("bf_healed","1");
+    Promise.all([navigator.serviceWorker ? navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}) : 0,
+      window.caches ? caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))}) : 0]).then(function(){ location.reload(); }); }
+  window.addEventListener("error", function(e){ if (e.target && e.target.tagName === "SCRIPT") heal(); }, true);
+  setTimeout(function(){ var r = document.getElementById("root"); if (r && !r.children.length) heal(); }, 4000);
+})();
+</script>
 <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
