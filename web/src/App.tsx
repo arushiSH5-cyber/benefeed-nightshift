@@ -16,7 +16,10 @@ const store = {
   get<T>(k: string, d: T): T { try { const v = localStorage.getItem("bfns_" + k); return v ? JSON.parse(v) : d; } catch { return d; } },
   set(k: string, v: unknown) { try { localStorage.setItem("bfns_" + k, JSON.stringify(v)); } catch { /* private mode */ } },
 };
-const money = (n: number) => "$" + n.toLocaleString("en-US");
+let CUR = "$";
+const money = (n: number) => (CUR === "$" ? "$" + n.toLocaleString("en-US") : n.toLocaleString("fr-FR") + " " + CUR);
+const LV: Record<string, string> = { federal: "🏛️ Federal", state: "🗺️ State", local: "🏘️ Local", national: "🏛️ National" };
+const FLAGS: [string, string, string][] = [["US", "🇺🇸", "USA"], ["FR", "🇫🇷", "France"], ["UK", "🇬🇧", "UK"]];
 const mid = (p: Program) => Math.round((p.est[0] + p.est[1]) / 2);
 const dom = (u: string) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return u; } };
 const likesOf = (p: Program) => 380 + ((p.id.charCodeAt(0) * 37 + p.id.length * 91) % 1900);
@@ -31,7 +34,7 @@ export function piiProblem(s: string): string | null {
   return null;
 }
 
-type U = { done: boolean; who: string[]; inc: string; city: string; night: boolean; big: boolean; calm: boolean };
+type U = { done: boolean; who: string[]; inc: string; city: string; country?: "US" | "FR" | "UK"; night: boolean; big: boolean; calm: boolean };
 type SS = { liked: string[]; saved: string[]; clikes: string[]; myComments: Record<string, Comment[]>; myPosts: Post[] };
 const DEF_U: U = { done: false, who: [], inc: "low", city: "San Jose", night: false, big: false, calm: false };
 const DEF_S: SS = { liked: [], saved: [], clikes: [], myComments: {}, myPosts: [] };
@@ -40,7 +43,7 @@ const ORDER = ["snap", "extra", "medicaid", "eitc", "lifeline", "wic", "msp", "s
 const rank = (p: Program) => { const i = ORDER.indexOf(p.id); return i < 0 ? 99 : i; };
 type Match = { p: Program; level: "likely" | "maybe" };
 function matchesFor(u: U): Match[] {
-  return P.map((p): Match | null => {
+  return P.filter((p) => (p.country || "US") === (u.country || "US")).map((p): Match | null => {
     const tagOk = p.tags.includes("any") || p.tags.some((t) => u.who.includes(t));
     if (!tagOk) return null;
     const incOk = p.who.includes(u.inc);
@@ -78,6 +81,7 @@ export default function App() {
   const [playing, setPlaying] = useState(false);
   const [onbStep, setOnbStep] = useState<number | null>(() => (store.get<U>("u", DEF_U).done ? null : 0));
   const ns = NS.useNS();
+  CUR = u.country === "FR" ? "€" : u.country === "UK" ? "£" : "$";
   const [, setLangTick] = useState(0);
   useEffect(() => { if (getLang() === "fr") setLang("fr"); }, []);
   const toastT = useRef(0);
@@ -170,7 +174,7 @@ export default function App() {
         </header>
         <main>
           {tab === "home" && (
-            <Feed mode={feedMode} u={u} s={s} M={M} ns={ns} playing={playing} setPlaying={setPlaying}
+            <Feed onQuiz={(tag, yes) => saveU({ who: [...u.who, yes ? tag : "no-" + tag] })} mode={feedMode} u={u} s={s} M={M} ns={ns} playing={playing} setPlaying={setPlaying}
               onAct={nsAct} openSheet={openSheet} toast={toast} saveS={saveS} />
           )}
           {tab === "crew" && <Crew ns={ns} onAct={nsAct} openSheet={openSheet} />}
@@ -249,6 +253,7 @@ function Onboarding({ step, setStep, u, saveU, found, finish }: { step: number; 
   if (step === 2)
     h = <><Say t="Roughly how much comes in each month?" /><h2 className="h1">Money in</h2>
       <div className="opts one">{([["low", "Under $2,500 a month", "Tight most months"], ["mid", "$2,500 to $5,000", "Getting by"], ["high", "Over $5,000", "Mostly okay"]] as const).map(([k, l, sm]) => <button key={k} className="opt" aria-pressed={u.inc === k} onClick={() => saveU({ inc: k })}><I h={CATS.money.ic} style={{ display: "contents" }} /><span>{l}<small>{sm}</small></span></button>)}</div>
+      <span className="lbl">your country</span><div className="wrap">{FLAGS.map(([k, f, l]) => <button key={k} className="chip" aria-pressed={(u.country || "US") === k} onClick={() => saveU({ country: k as U["country"] })}>{f} {l}</button>)}</div>
       <label className="lbl" htmlFor="ct">your city</label><input className="inp" id="ct" value={city} onChange={(e) => setCity(e.target.value)} autoComplete="address-level2" maxLength={60} />
       <div className="foot">{dots}<button className="btn wide" onClick={() => { saveU({ city: city.trim() || "San Jose" }); setStep(3); }}>Send my crew</button></div></>;
   if (step === 3) {
@@ -263,8 +268,8 @@ function Onboarding({ step, setStep, u, saveU, found, finish }: { step: number; 
 }
 
 /* ---------- feed ---------- */
-type FeedProps = { mode: "for" | "com"; u: U; s: SS; M: Match[]; ns: ReturnType<typeof NS.useNS>; playing: boolean; setPlaying: (b: boolean) => void; onAct: (a: string) => void; openSheet: (s: Sheet) => void; toast: (m: string) => void; saveS: (f: (x: SS) => SS) => void };
-function Feed({ mode, u, s, M, ns, playing, setPlaying, onAct, openSheet, toast, saveS }: FeedProps) {
+type FeedProps = { onQuiz: (tag: string, yes: boolean) => void; mode: "for" | "com"; u: U; s: SS; M: Match[]; ns: ReturnType<typeof NS.useNS>; playing: boolean; setPlaying: (b: boolean) => void; onAct: (a: string) => void; openSheet: (s: Sheet) => void; toast: (m: string) => void; saveS: (f: (x: SS) => SS) => void };
+function Feed({ onQuiz, mode, u, s, M, ns, playing, setPlaying, onAct, openSheet, toast, saveS }: FeedProps) {
   const ref = useRef<HTMLElement>(null);
   const cur = useRef<Element | null>(null);
   useEffect(() => {
@@ -331,6 +336,9 @@ function Feed({ mode, u, s, M, ns, playing, setPlaying, onAct, openSheet, toast,
   return (
     <section className="feed" ref={ref} aria-label="Feed">
       {mode === "for" && <BriefCard ns={ns} onAct={onAct} />}
+      {mode === "for" && QUIZ.filter((q) => !u.who.includes(q.tag) && !u.who.includes("no-" + q.tag)).slice(0, 2).map((q) => (
+        <QuizCard key={q.tag} q={q} onAnswer={(yes) => { onQuiz(q.tag, yes); toast(yes ? "Got it! Your matches updated" : "Okay, noted"); }} />
+      ))}
       {mode === "for" && M.map((m, i) => {
         const p = m.p, c = CATS[p.cat], liked = s.liked.includes(p.id), saved = s.saved.includes(p.id);
         return (
@@ -342,7 +350,7 @@ function Feed({ mode, u, s, M, ns, playing, setPlaying, onAct, openSheet, toast,
             <span className="amt"><b data-r>about {p.yearly ? <>{money(p.est[0] * 12)}–{money(p.est[1] * 12)}<small> a year</small></> : <>{money(p.est[0])}–{money(p.est[1])}<small> a month</small></>}</b><small>estimate</small></span>
             {i === 0 && <span className="swipehint"><I h={IC.up} style={{ display: "contents" }} /> swipe up</span>}
             <div className="info">
-              <div className="who">{p.prog.split(" (")[0]} <I h={IC.check} style={{ display: "contents" }} /> <span className={"pill " + (m.level === "likely" ? "" : "maybe")}>{m.level === "likely" ? "You likely qualify" : "You might qualify"}</span></div>
+              <div className="who">{p.prog.split(" (")[0]} <I h={IC.check} style={{ display: "contents" }} /> {p.level && <span className="pill lvl">{LV[p.level]}</span>} <span className={"pill " + (m.level === "likely" ? "" : "maybe")}>{m.level === "likely" ? "You likely qualify" : "You might qualify"}</span></div>
               <p data-r>{p.what}</p>
               <div className="ctas"><button className="cta" onClick={() => openSheet({ k: "details", id: p.id, t: "apply" })}>How to apply</button><button className="cta ghost" onClick={() => openSheet({ k: "details", id: p.id, t: "src" })}><I h={IC.doc} style={{ display: "contents" }} />Sources</button></div>
             </div>
@@ -685,4 +693,34 @@ async function enablePush(): Promise<string> {
     await fetch("/api/push/subscribe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(sub.toJSON()) });
     return "Done. Your crew will ping you in the morning";
   } catch { return "Couldn't turn on notifications here"; }
+}
+
+/* ---------- swipe questions: right = yes, left = no ---------- */
+const QUIZ = [
+  { tag: "renter", emoji: "🏠", q: "Do you rent your home?", fr: "Vous êtes locataire ?" },
+  { tag: "energy", emoji: "⚡", q: "Are energy bills hard to pay?", fr: "Les factures d'énergie sont dures à payer ?" },
+];
+function QuizCard({ q, onAnswer }: { q: (typeof QUIZ)[number]; onAnswer: (yes: boolean) => void }) {
+  const [dx, setDx] = useState(0);
+  const start = useRef<number | null>(null);
+  const done = (yes: boolean) => { setDx(yes ? 600 : -600); cheer(); setTimeout(() => onAnswer(yes), 280); };
+  return (
+    <article className="vid quiz">
+      <Spk /><span className="count">quick question</span>
+      <div className="qcard" style={{ transform: `translateX(${dx}px) rotate(${dx / 18}deg)`, transition: start.current === null ? "transform .3s" : "none" }}
+        onPointerDown={(e) => { start.current = e.clientX; (e.target as HTMLElement).setPointerCapture?.(e.pointerId); }}
+        onPointerMove={(e) => { if (start.current !== null) setDx(e.clientX - start.current); }}
+        onPointerUp={() => { const d = dx; start.current = null; if (d > 90) done(true); else if (d < -90) done(false); else setDx(0); }}>
+        <span className="qemoji">{q.emoji}</span>
+        <h2>{q.q}</h2>
+        <p className="note">Swipe right for yes, left for no</p>
+        <span className="stamp yes" style={{ opacity: Math.max(0, dx / 120) }}>YES</span>
+        <span className="stamp no" style={{ opacity: Math.max(0, -dx / 120) }}>NO</span>
+      </div>
+      <div className="ctas" style={{ justifyContent: "center", marginTop: 18 }}>
+        <button className="cta ghost" onClick={() => done(false)}>👈 No</button>
+        <button className="cta" onClick={() => done(true)}>Yes 👉</button>
+      </div>
+    </article>
+  );
 }

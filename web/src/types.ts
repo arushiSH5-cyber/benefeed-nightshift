@@ -3,6 +3,7 @@ export type Program = {
   who: string[]; tags: string[]; rule: string; est: [number, number];
   docs: string[]; src: [string, string]; deadline?: string | null; yearly?: boolean;
   whoFor?: string[]; steps?: string[]; apply?: [string, string];
+  level?: "federal" | "state" | "local" | "national"; country?: "US" | "FR" | "UK";
 };
 
 export type Comment = [who: string, text: string, likes: number, got: boolean];

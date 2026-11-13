@@ -32,6 +32,14 @@ In the morning you see a **sunrise**, a notification and one card: *"Your crew g
 ## 🎬 Demo videos
 ▶ **[Watch the demo (English, 21 s)](docs/demo-en.mp4)** · ▶ **[Voir la démo (Français, 18 s)](docs/demo-fr.mp4)**
 
+## 🌍 Countries and levels
+Pick your country in onboarding: 🇺🇸 **USA**, 🇫🇷 **France** or 🇬🇧 **UK**. Every card shows its level (🏛️ Federal / National, 🗺️ State, 🏘️ Local) and its official source.
+- **France:** APL (CAF), Prime d'activité, RSA, Complémentaire santé solidaire (ameli.fr), ASPA, Chèque énergie
+- **UK:** Pension Credit, Universal Credit, Warm Home Discount, Council Tax Reduction (GOV.UK)
+- **USA:** 20 programs (CalFresh/SNAP, Medi-Cal, SSI, EITC, Lifeline…)
+
+The feed also asks **swipe questions**: right for yes, left for no ("Do you rent your home?", "Are energy bills hard to pay?"). Your matches update instantly.
+
 ## 🇫🇷 En français
 Tap **FR** in the top bar and the whole app switches to French: onboarding, the crew, the hard stop ("🔒 attend votre oui"), the morning card and the review. It also follows the phone's language automatically. *Note: the demo programs are Californian (CalFresh, Medi-Cal); a France pack (CAF, APL, RSA, prime d'activité) is next on the roadmap.*
 

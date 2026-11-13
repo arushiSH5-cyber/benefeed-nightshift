@@ -337,3 +337,11 @@ html.night .phone{background:#262f55;box-shadow:0 0 0 1px #3a4577,0 18px 40px -2
 .phone-wrap .phone::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.18),transparent 40%)}
 html.calm .phone-wrap .phone{transform:none}
 #root{height:100%}
+
+.pill.lvl{background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.vid.quiz{justify-content:center;padding-top:0}
+.qcard{position:relative;width:min(300px,78vw);aspect-ratio:3/4;border-radius:28px;background:var(--card);box-shadow:0 22px 44px -22px rgba(38,44,92,.55),inset 0 0 0 1px var(--line);display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;padding:20px;touch-action:pan-y;user-select:none;cursor:grab}
+.qcard h2{margin:0}.qemoji{font-size:64px}
+.stamp{position:absolute;top:22px;padding:4px 14px;border-radius:10px;font-family:var(--disp);font-weight:700;font-size:26px;border:3px solid}
+.stamp.yes{left:18px;color:var(--ok);border-color:var(--ok);transform:rotate(-12deg)}
+.stamp.no{right:18px;color:var(--heart);border-color:var(--heart);transform:rotate(12deg)}

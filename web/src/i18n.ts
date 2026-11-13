@@ -46,7 +46,7 @@ const FR: Record<string, string> = {
   "swipe up": "glissez vers le haut", "You're all caught up": "Vous êtes à jour", "Back to the top": "Retour en haut",
   "Open it on your phone": "Ouvrez-le sur votre téléphone", "How Night Shift works": "Comment fonctionne l'équipe de nuit",
   "Night mode": "Mode nuit", "Bigger text": "Texte plus grand", "Calm mode": "Mode calme", "Erase everything": "Tout effacer",
-  "Retake the quiz": "Refaire le questionnaire", "Your profile": "Votre profil",
+  "Retake the quiz": "Refaire le questionnaire", "about": "environ", "a month": "par mois", "a year": "par an", "of": "sur", "Food": "Alimentation", "Health": "Santé", "Money": "Argent", "Housing": "Logement", "Bills": "Factures", "Kids": "Enfants", "Rides": "Transport", "Jobs": "Emploi", "School": "Études", "Disability": "Handicap", "Seniors": "Seniors", "Veterans": "Anciens combattants", "your country": "votre pays", "quick question": "petite question", "Do you rent your home?": "Vous êtes locataire ?", "Are energy bills hard to pay?": "Les factures d'énergie sont dures à payer ?", "Swipe right for yes, left for no": "Glissez à droite pour oui, à gauche pour non", "👈 No": "👈 Non", "Yes 👉": "Oui 👉", "🏛️ Federal": "🏛️ Fédéral", "🗺️ State": "🗺️ État", "🏘️ Local": "🏘️ Local", "Got it! Your matches updated": "Compris ! Vos aides sont à jour", "Okay, noted": "D'accord, c'est noté", "Your profile": "Votre profil",
 };
 const EN: Record<string, string> = Object.fromEntries(Object.entries(FR).map(([k, v]) => [v, k]));
 const PART: [RegExp, string][] = [
