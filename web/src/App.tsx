@@ -264,7 +264,10 @@ function Onboarding({ step, setStep, u, saveU, found, finish }: { step: number; 
       {doneAll && <div style={{ display: "grid", gap: 6, justifyItems: "center" }}><span className="money">{money(amt)}</span><b>a month you may be missing</b><p className="note">Sample estimate.</p></div>}</div>
       <div className="foot">{dots}<button className="btn wide" disabled={!doneAll} style={{ opacity: doneAll ? 1 : 0.5 }} onClick={finish}>Start swiping</button></div></>;
   }
-  return <div className="onb"><div className="in">{h}</div></div>;
+  return <div className="onb"><div className="in">
+    <div className="langsw" role="group" aria-label="Language / Langue">
+      {(["en", "fr"] as const).map((l) => <button key={l} aria-pressed={getLang() === l} onClick={() => { setLang(l); saveU({}); }}>{l === "en" ? "🇺🇸 English" : "🇫🇷 Français"}</button>)}
+    </div>{h}</div></div>;
 }
 
 /* ---------- feed ---------- */
