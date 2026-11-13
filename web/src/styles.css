@@ -336,3 +336,4 @@ html.night .phone{background:#262f55;box-shadow:0 0 0 1px #3a4577,0 18px 40px -2
 .phone-wrap .phone{transform:rotateX(var(--rx,6deg)) rotateY(var(--ry,-10deg));transform-style:preserve-3d;transition:transform .25s ease-out;box-shadow:calc(var(--ry,-10deg)*-1.2) 26px 50px -22px rgba(38,44,92,.65)}
 .phone-wrap .phone::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.18),transparent 40%)}
 html.calm .phone-wrap .phone{transform:none}
+#root{height:100%}
