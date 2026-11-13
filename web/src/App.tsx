@@ -85,6 +85,15 @@ export default function App() {
     toastT.current = window.setTimeout(() => setToastMsg(null), 2300);
   }, []);
   useEffect(() => { NS.onToast(toast); }, [toast]);
+  const [sun, setSun] = useState<"" | "on" | "out">("");
+  const [ban, setBan] = useState(false);
+  useEffect(() => {
+    NS.onMorning(() => {
+      const done = () => { go("home"); cheer(); setTimeout(() => { setBan(true); setTimeout(() => setBan(false), 7000); }, 350); };
+      if (document.documentElement.classList.contains("calm")) { done(); return; }
+      setSun("on"); setTimeout(done, 1500); setTimeout(() => setSun("out"), 1900); setTimeout(() => setSun(""), 2500);
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const saveU = (p: Partial<U>) => setU((x) => { const n = { ...x, ...p }; store.set("u", n); return n; });
   const saveS = (f: (x: SS) => SS) => setS((x) => { const n = f(x); store.set("s", n); return n; });
 
@@ -190,6 +199,10 @@ export default function App() {
         {sheet?.k === "review" && <Review ns={ns} only={sheet.only} close={closeSheet} go={go} openSheet={openSheet} toast={toast} />}
         {sheet?.k === "change" && <Change id={sheet.id} close={closeSheet} toast={toast} />}
       </div>
+      {sun && <div className={"sunrise" + (sun === "out" ? " out" : "")} aria-hidden="true"><div className="sun" /><b>8:00 AM</b><span>Good morning, Rosa</span></div>}
+      <button className={"push" + (ban ? " on" : "")} aria-hidden={!ban} tabIndex={ban ? 0 : -1} onClick={() => { setBan(false); openSheet({ k: "review" }); }}>
+        <I h={cr("pip")} style={{ display: "contents" }} /><span><b>Benefeed</b><small>now</small><br />🌙 Your crew is done. {NS.readyN()} things are waiting for your yes.</span>
+      </button>
       <div className={"toast" + (toastMsg ? " show" : "")} role="status">{toastMsg}</div>
     </>
   );
@@ -411,6 +424,8 @@ function EndCard({ onTop }: { onTop: () => void }) {
 function Details({ id, t0 }: { id: string; t0: "who" | "apply" | "src" }) {
   const [t, setT] = useState(t0);
   const [quote, setQuote] = useState(false);
+  const [src, setSrc] = useState<Src | null>(null);
+  useEffect(() => { loadSources().then((m) => setSrc(m[id] || null)); }, [id]);
   const p = P.find((x) => x.id === id);
   if (!p) return null;
   const ap = p.apply || ["Go to the official site", p.src[1]], two = !!p.apply && p.apply[1] !== p.src[1];
@@ -424,7 +439,7 @@ function Details({ id, t0 }: { id: string; t0: "who" | "apply" | "src" }) {
         {t === "src" && <div className="sec"><p style={{ margin: 0 }}>Every fact on this card comes from these official pages.</p>
           <div className="src"><span className="n">1</span><div><a href={p.src[1]} target="_blank" rel="noopener">{p.src[0]} ↗</a><small>{dom(p.src[1])} · official program page</small></div></div>
           {two && <div className="src"><span className="n">2</span><div><a href={p.apply![1]} target="_blank" rel="noopener">{p.apply![0]} ↗</a><small>{dom(p.apply![1])} · how to apply</small></div></div>}
-          <div className="why"><b>Checked by Fern via Tavily</b> · official domains only · sample until Fern's first check. {quote ? <><br /><small>The saved quote appears here after Fern checks this page.</small></> : <button className="cite" style={{ width: "auto", padding: "0 8px" }} onClick={() => setQuote(true)}>Show the quote</button>}</div></div>}
+          <div className="why"><b>Checked by Fern via Tavily</b> · official domains only · {src ? new Date(src.fetchedAt * 1000).toLocaleDateString() : "sample until Fern's first check"}. {quote ? <><br /><small>{src ? <>“{src.quote}” <a href={src.url} target="_blank" rel="noopener">{dom(src.url)} ↗</a></> : "The saved quote appears here after Fern checks this page."}</small></> : <button className="cite" style={{ width: "auto", padding: "0 8px" }} onClick={() => setQuote(true)}>Show the quote</button>}</div></div>}
       </div>
     </>
   );
@@ -610,6 +625,7 @@ function Me({ u, s, M, found, saveU, retake, toast }: { u: U; s: SS; M: Match[];
     <section className="view" aria-label="Me">
       <div className="card" style={{ display: "flex", gap: 14, alignItems: "center" }}><I h={pipLive()} style={{ width: 84, height: 84, flex: "none" }} /><div><h1 className="h1" style={{ fontSize: 22 }}>Your profile</h1><p className="note">{u.city}</p></div></div>
       <A2HS />
+      <button className="btn ghost" onClick={async () => toast(await enablePush())}>🌙 Turn on the morning notification</button>
       <div className="card stat3"><div><b>{M.length}</b><small>matches</small></div><div><b>{s.saved.length}</b><small>saved</small></div><div><b>{money(found)}</b><small>/month found</small></div></div>
       <div className="card set">
         {([["night", "Night mode", "Navy, easy on the eyes"], ["big", "Bigger text", "Easier to read"], ["calm", "Calm mode", "No animations"]] as const).map(([k, l, sm]) =>
@@ -648,4 +664,21 @@ function Hold({ label, onDone }: { label: string; onDone: () => void }) {
       {p > 0 && p < 1 ? "Keep holding…" : label}
     </button>
   );
+}
+
+type Src = { url: string; quote: string; fetchedAt: number };
+let srcCache: Promise<Record<string, Src>> | null = null;
+const loadSources = (): Promise<Record<string, Src>> => (srcCache ||= fetch("/api/sources").then((r) => (r.ok ? r.json() : {})).catch(() => ({}))) as Promise<Record<string, Src>>;
+
+async function enablePush(): Promise<string> {
+  try {
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) return "On iPhone, add Benefeed to your Home Screen first";
+    if ((await Notification.requestPermission()) !== "granted") return "Notifications are off";
+    const { key } = await (await fetch("/api/push/key")).json();
+    const raw = Uint8Array.from(atob(key.replace(/-/g, "+").replace(/_/g, "/") + "==".slice((key.length + 2) % 4 || 2)), (c) => c.charCodeAt(0));
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: raw });
+    await fetch("/api/push/subscribe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(sub.toJSON()) });
+    return "Done. Your crew will ping you in the morning";
+  } catch { return "Couldn't turn on notifications here"; }
 }

@@ -60,6 +60,8 @@ export const getNS = () => S;
 let calm = false;
 export const setCalm = (c: boolean) => { calm = c; };
 let notify: (m: string) => void = () => {};
+let morning: () => void = () => {};
+export const onMorning = (f: () => void) => { morning = f; };
 export const onToast = (f: (m: string) => void) => { notify = f; };
 
 const nowT = () => new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
@@ -156,8 +158,7 @@ async function runReplay() {
   }
   set({ on: false, agent: null, cur: IDLE, brief: true });
   addLog("pip", "All 3 paused before the final tap. The phone goes back to sleep");
-  cheer();
-  notify("Your crew is done. 3 things are waiting for your yes");
+  morning();
 }
 
 async function approveReplay(id: string) {
@@ -213,7 +214,7 @@ function startPolling(id: string) {
       if (ready > prevReady) cheer();
       prevReady = ready;
       if (["done", "stopped", "failed", "waiting"].includes(run.status) && !run.tasks.some((t) => t.status === "running")) {
-        if (run.status === "waiting" && ready) notify(`Your crew is done. ${ready} thing${ready > 1 ? "s are" : " is"} waiting for your yes`);
+        if (run.status === "waiting" && ready) morning();
         clearInterval(poll);
       }
     } catch { /* keep trying; network-first */ }

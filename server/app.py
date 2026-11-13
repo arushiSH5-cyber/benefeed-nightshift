@@ -30,6 +30,8 @@ RUNNER_ONLINE_S = 20
 
 app = FastAPI(title="Benefeed Night Shift", docs_url=None, redoc_url=None)
 app.include_router(practice_router)
+from .extras import fern_check, router as extras_router, send_morning  # noqa: E402
+app.include_router(extras_router)
 
 
 # ---------- limits ----------
@@ -237,6 +239,11 @@ def media(name: str):
     return FileResponse(f, media_type="image/png", headers={"Cache-Control": "private, max-age=86400"})
 
 
+@app.post("/api/sources/refresh", dependencies=[Depends(limit("start")), Depends(require_owner)])
+def refresh_sources():
+    return {"checked": fern_check()}
+
+
 # ---------- runner API (shared secret, outbound from the Mac) ----------
 class Heartbeat(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -316,6 +323,8 @@ class RunPatch(BaseModel):
 @app.patch("/api/runner/runs/{run_id}", dependencies=[Depends(require_runner)])
 def runner_patch(run_id: str, body: RunPatch):
     r = _get(run_id)
+    if body.status == "waiting" and r["status"] != "waiting":
+        send_morning(sum(t["status"] == "ready" for t in r["tasks"]))
     if body.status:
         r["status"] = body.status
     for t in body.tasks or []:
