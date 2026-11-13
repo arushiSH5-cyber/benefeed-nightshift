@@ -33,7 +33,13 @@ class BrowserPhone:
     def __init__(self):
         self.pw = sync_playwright().start()
         self.browser = self.pw.chromium.launch(headless=os.environ.get("BROWSER_HEADLESS", "1") == "1")
-        self.page = self.browser.new_page(viewport={"width": 390, "height": 844}, device_scale_factor=2, is_mobile=True, has_touch=True)
+        self.video = os.environ.get("BROWSER_VIDEO")  # folder: record every run as a video
+        self._open()
+
+    def _open(self):
+        self.ctx = self.browser.new_context(viewport={"width": 390, "height": 844}, device_scale_factor=2, is_mobile=True, has_touch=True,
+                                            **({"record_video_dir": self.video, "record_video_size": {"width": 390, "height": 844}} if self.video else {}))
+        self.page = self.ctx.new_page()
         self.page.set_content("<body style='font:20px system-ui;display:grid;place-items:center;height:100vh;background:#fbf6ea'>🌙 Do Not Disturb</body>")
         self.els: dict[str, dict] = {}
 
@@ -41,7 +47,12 @@ class BrowserPhone:
         return [{"id": "browser-phone", "name": "Demo phone (browser)", "online": True, "automation": "ready"}]
 
     def lease(self, dev, seconds=600): return {"leaseId": "local"}
-    def release(self, dev): pass
+    def release(self, dev):
+        # Keep the page between the hard stop and the yes (the form lives in it); after the final
+        # Submit, close the context so the video file is written, and start fresh for the next run.
+        if self.video and self.page.url.endswith("/practice/submit"):
+            self.ctx.close()
+            self._open()
 
     def screenshot(self, dev) -> bytes:
         return self.page.screenshot(type="png")

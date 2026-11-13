@@ -29,6 +29,17 @@ NCOA estimates **9.1M older adults miss about $58B a year** in benefits they alr
 
 In the morning you see a **sunrise**, a notification and one card: *"Your crew got 3 things ready."* Swipe through the filmstrip of real screenshots and **hold to approve**. Only then does the crew tap Submit, Add or Send.
 
+## 🤖 Real automation, recorded
+<img src="docs/live-automation.gif" width="240" align="right" alt="The crew filling the practice portal live">
+
+This is **not a mock-up**. It's a screen recording of a live run: **Claude, driven by our LangGraph crew**, operates a phone-sized browser:
+1. It opens the practice portal and fills **Household → Income → Contact** for the test persona: 2 people, 60+, under $2,500, pay stub "later", San Jose, mornings.
+2. It **stops by itself at 🔒 Submit** (the guard in code raises, and LangGraph `interrupt()`s).
+3. After the **Yes** from the app, it resumes, taps **Submit → Confirm**, and the portal stores the application.
+
+▶ [Full video (MP4)](docs/live-automation.mp4). The same crew drives a **PhoneUse cloud phone** with `./demo.sh hosted`.
+<br clear="right">
+
 ## 🎬 Demo videos
 ▶ **[Watch the demo (English, 21 s)](docs/demo-en.mp4)** · ▶ **[Voir la démo (Français, 18 s)](docs/demo-fr.mp4)**
 
