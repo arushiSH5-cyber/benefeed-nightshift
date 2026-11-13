@@ -111,7 +111,7 @@ export default function App() {
   useEffect(() => {
     NS.resume();
     const q = new URLSearchParams(location.search);
-    if (q.get("review")) { setTab("home"); openSheet({ k: "review" }); history.replaceState(null, "", "/"); }
+    if (q.get("review")) { setTab("home"); openSheet({ k: "review" }); history.replaceState(null, "", import.meta.env.BASE_URL); }
     const t = setInterval(NS.refreshStatus, 15000);
     return () => clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -408,7 +408,7 @@ function BriefCard({ ns, onAct }: { ns: ReturnType<typeof NS.useNS>; onAct: (a: 
 
 function EndCard({ onTop }: { onTop: () => void }) {
   const [qr, setQr] = useState("");
-  useEffect(() => { QRCode.toDataURL(location.origin, { margin: 1, width: 300, color: { dark: "#3e3b4f", light: "#ffffff" } }).then(setQr).catch(() => {}); }, []);
+  useEffect(() => { QRCode.toDataURL(location.origin + import.meta.env.BASE_URL, { margin: 1, width: 300, color: { dark: "#3e3b4f", light: "#ffffff" } }).then(setQr).catch(() => {}); }, []);
   return (
     <article className="vid">
       <Spk /><div className="stage"><I h={cr("nimbus")} style={{ display: "contents" }} /></div>
