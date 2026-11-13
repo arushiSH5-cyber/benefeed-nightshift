@@ -8,7 +8,7 @@ A crew of four AI helpers works overnight **on a real phone**. They fill in a be
 
 [**▶ Open the app on your phone**](https://arushish5-cyber.github.io/benefeed-nightshift/)
 
-<img src="docs/qr.png" width="170" alt="QR code: open Benefeed on your phone">&nbsp;&nbsp;&nbsp;<img src="docs/onboarding.jpg" width="200" alt="Pip says hi">
+<img src="docs/demo.gif" width="260" alt="Benefeed demo: onboarding, feed, crew on the phone, hard stop, morning card, review">&nbsp;&nbsp;&nbsp;<img src="docs/qr.png" width="170" alt="QR code: open Benefeed on your phone">
 
 ![PWA](https://img.shields.io/badge/PWA-installable-6f84b4) ![tests](https://img.shields.io/badge/safety%20tests-25%20passing-5e6d3d) ![PhoneUse](https://img.shields.io/badge/PhoneUse-cloud%20phone-3e3b4f) ![LangGraph](https://img.shields.io/badge/LangGraph-interrupt()-3e3b4f) ![Claude](https://img.shields.io/badge/Claude-brain-df8f8f)
 
@@ -28,6 +28,34 @@ NCOA estimates **9.1M older adults miss about $58B a year** in benefits they alr
 | ☁️ **Nimbus** (reminders) | Puts the Medi-Cal renewal and free tax help into the calendar, with the official link. |
 
 In the morning you see a **sunrise**, a notification and one card: *"Your crew got 3 things ready."* Swipe through the filmstrip of real screenshots and **hold to approve**. Only then does the crew tap Submit, Add or Send.
+
+## 📸 Every screen
+| 1. Hi, I'm Pip | 2. Three questions | 3. The crew finds your help |
+|:-:|:-:|:-:|
+| <img src="docs/1-hello.jpg" width="230"> | <img src="docs/2-about.jpg" width="230"> | <img src="docs/3-crew-finds.jpg" width="230"> |
+| **4. Night shift is on** | **5. Swipe your matches** | **6. The crew works the phone (3D, live)** |
+| <img src="docs/4-tonight.jpg" width="230"> | <img src="docs/5-feed.jpg" width="230"> | <img src="docs/6-crew-live.jpg" width="230"> |
+| **7. 🔒 Hard stop at "Add"** | **8. Good morning + notification** | **9. Filmstrip + hold to approve** |
+| <img src="docs/7-hard-stop.jpg" width="230"> | <img src="docs/8-morning.jpg" width="230"> | <img src="docs/9-review.jpg" width="230"> |
+
+## 🤖 How the automation works, step by step
+Each task is a loop on the real phone: **observe** (read the screen's element tree and a screenshot) → **decide** (Claude picks one action from 9: `open_url, launch_app, find, click, fill, tap, scroll, done, need_human`) → **act** (through the safety guard) → **verify** (look again; retry once, then ask a human).
+
+| Task | Agent | What happens on the phone | Stops before |
+|---|---|---|---|
+| **A. CalFresh application** | 🐰 Bun | Opens the browser → practice portal → fills household (2, one 60+) → picks income from a dropdown → notes the missing pay stub → contact (city, best time) → scrolls to the button below the fold | **Submit** (and the confirm pop-up) |
+| **B. Deadlines** | ☁️ Nimbus | Opens Calendar → drafts "Medi-Cal renewal" and "VITA free tax help", with the **official .gov link** in the notes | **Add** |
+| **C. Ask a helper** | 🐦 Pip | Opens Messages → finds the helper (Maria) → types a plain-Spanish note plus an ElevenLabs voice-note link | **Send** |
+
+Every step streams to the Crew tab as one plain-English line ("Bun is filling your household size") plus the real screenshot. In the morning, **Yes** resumes the LangGraph `interrupt()` and the crew taps the final button. **Skip** never taps it, and **Change** redoes the task and stops again.
+
+## 🚀 What this unlocks next
+The same crew, guard and approval flow work for any form-heavy chore on a phone:
+- **Renewals on autopilot:** Medi-Cal, SNAP recertification and Lifeline each year. Nimbus watches the deadline, Bun pre-fills, and you say yes.
+- **More programs:** WIC, LIHEAP energy help, Extra Help for Medicare drugs and free tax filing (VITA).
+- **Caregiver mode:** a daughter approves from her phone; the helper sees the plan, never the answers.
+- **Languages:** Spanish first, with the voice briefing in your language.
+- **Any phone:** PhoneUse cloud phones today, your own phone over USB or the cloud tomorrow.
 
 ## Try it in 30 seconds
 1. Scan the QR code, then **Share → Add to Home Screen**.
