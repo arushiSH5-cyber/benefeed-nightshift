@@ -1,0 +1,30 @@
+# reference mockup, never pushed
+design/
+
+# secrets and state
+.env
+.env.*
+!.env.example
+*.db
+*.db-journal
+*.sqlite
+runner/.state/
+server/.state/
+.state/
+phoneuse/
+**/admin-token
+
+# screenshots / recordings
+screenshots/
+*.png.tmp
+recordings/
+
+# build + deps
+node_modules/
+dist/
+web/dist/
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.DS_Store
