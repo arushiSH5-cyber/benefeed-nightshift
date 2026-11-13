@@ -331,3 +331,8 @@ html.night .phone{background:#262f55;box-shadow:0 0 0 1px #3a4577,0 18px 40px -2
 .push.on{transform:translate(-50%,0)}
 .push svg{width:40px;height:40px}
 .push small{color:var(--soft);float:right;font-weight:700}
+/* 3D phone: tilts toward the pointer / device, floats in night mode */
+.phone-wrap{perspective:900px}
+.phone-wrap .phone{transform:rotateX(var(--rx,6deg)) rotateY(var(--ry,-10deg));transform-style:preserve-3d;transition:transform .25s ease-out;box-shadow:calc(var(--ry,-10deg)*-1.2) 26px 50px -22px rgba(38,44,92,.65)}
+.phone-wrap .phone::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.18),transparent 40%)}
+html.calm .phone-wrap .phone{transform:none}
