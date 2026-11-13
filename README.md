@@ -3,9 +3,12 @@
 **You're on Do Not Disturb. Your crew isn't.**
 
 Millions of people miss benefits they qualify for, because applying means fighting forms on a small screen (NCOA estimates 9.1M older adults miss about $58B a year).
-Benefeed's crew of four helpers (Pip, Fern, Bun and Nimbus) works overnight **on your real iPhone through PhoneUse**. They fill in the application, add deadlines to Calendar and draft a text to a family helper. Then they **stop before every final tap**. In the morning you get one card: *"3 things are ready. Say yes."*
+Benefeed's crew of four helpers (Pip, Fern, Bun and Nimbus) works overnight **on a real phone through PhoneUse**. They fill in the application, add deadlines to Calendar and draft a text to a family helper. Then they **stop before every final tap**. In the morning you get one card: *"3 things are ready. Say yes."*
 
-<img src="docs/onboarding.jpg" width="260" alt="Benefeed onboarding with Pip">
+## 📱 Try it on your phone
+**https://arushish5-cyber.github.io/benefeed-nightshift/**. Open it, tap **Share → Add to Home Screen**, then tap **▶ Watch it now**.
+
+<img src="docs/qr.png" width="180" alt="QR code to open Benefeed"> <img src="docs/onboarding.jpg" width="220" alt="Benefeed onboarding with Pip">
 
 ## Why it stands out
 - **Real phone, real apps.** The work happens in Safari, Calendar and Messages on an actual iPhone, not in a chatbot window.
@@ -15,12 +18,12 @@ Benefeed's crew of four helpers (Pip, Fern, Bun and Nimbus) works overnight **on
 ## Sponsors and their jobs
 | Sponsor | Job |
 |---|---|
-| **PhoneUse** | The crew's hands on the real iPhone (live screenshots, filmstrip) |
+| **PhoneUse** | The crew's hands on a real cloud phone (hosted MCP), with live screenshots and a filmstrip |
 | **LangGraph** | The crew's brain and the `interrupt()` before every final tap |
 | **LangSmith** | Traces every run ("See trace ↗") |
 | **Tavily** | Fern checks facts on official .gov domains only and saves the exact quote |
 | **ElevenLabs** | Pip's morning briefing and the Spanish voice note |
-| **Replit** | Hosts the server and PWA, so you can open it on any phone |
+| **GitHub Pages** | Hosts the installable PWA, so anyone can open it from the QR code |
 
 ## Architecture
 ```

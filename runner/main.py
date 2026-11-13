@@ -15,6 +15,7 @@ from langgraph.types import Command
 
 from .crew import Phone, build
 from .phoneuse import PhoneUse
+from .hosted import HostedPhoneUse
 from .safety import Stopped
 
 SERVER = os.environ.get("BENEFEED_SERVER", "http://127.0.0.1:8090").rstrip("/")
@@ -79,7 +80,7 @@ def run(job: dict, pu: PhoneUse, device: str, saver: SqliteSaver):
 
 
 def main():
-    pu = PhoneUse()
+    pu = HostedPhoneUse() if os.environ.get("PHONEUSE_MODE", "hosted") == "hosted" else PhoneUse()
     saver = SqliteSaver.from_conn_string(str(STATE / "checkpoints.db")).__enter__()
     print("runner up, server:", SERVER)
     while True:

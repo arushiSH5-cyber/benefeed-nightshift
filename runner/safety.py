@@ -7,7 +7,8 @@ from dataclasses import dataclass, field
 from urllib.parse import urlparse
 
 FINAL_RE = re.compile(r"submit|send|pay|purchase|buy|order|confirm|delete|remove|add event|\badd\b|transfer|sign", re.I)
-ALLOWED_APPS = {"com.apple.mobilesafari", "com.apple.mobilecal", "com.apple.MobileSMS"}
+ALLOWED_APPS = {"com.apple.mobilesafari", "com.apple.mobilecal", "com.apple.MobileSMS",
+                "com.android.chrome", "com.google.android.calendar", "com.google.android.apps.messaging"}
 APPROVAL_TTL = 120  # seconds an approval stays usable
 APPROVAL_TAPS = 2   # e.g. Submit then the confirm modal
 
