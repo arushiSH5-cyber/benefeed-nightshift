@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 // Service worker: caches the app shell, network-first for /api/*, and shows the morning push.
-import { precacheAndRoute, cleanupOutdatedCaches, createHandlerBoundToURL } from "workbox-precaching";
+import { precacheAndRoute, cleanupOutdatedCaches } from "workbox-precaching";
 import { registerRoute, NavigationRoute } from "workbox-routing";
 import { NetworkFirst, CacheFirst } from "workbox-strategies";
 import { clientsClaim } from "workbox-core";
@@ -12,7 +12,11 @@ cleanupOutdatedCaches();
 precacheAndRoute(self.__WB_MANIFEST);
 
 // App shell for navigations, except server-rendered pages (practice portal) and the API.
-registerRoute(new NavigationRoute(createHandlerBoundToURL(import.meta.env.BASE_URL + "index.html"), { denylist: [/^\/api\//, /^\/practice/, /^\/media\//] }));
+// Pages always come from the network when online (so a new deploy never leaves a stale, blank shell); cache is the offline fallback.
+const pages = new NetworkFirst({ cacheName: "pages", networkTimeoutSeconds: 3 });
+registerRoute(new NavigationRoute(async (o) => {
+  try { return await pages.handle(o); } catch { return (await caches.match(import.meta.env.BASE_URL + "index.html", { ignoreSearch: true })) || Response.error(); }
+}, { denylist: [/\/api\//, /\/practice/, /\/media\//] }));
 // Network-first API, so offline still shows the last briefing and plan.
 registerRoute(({ url }) => url.pathname.startsWith("/api/") && !url.pathname.startsWith("/api/tts"), new NetworkFirst({ cacheName: "api", networkTimeoutSeconds: 4 }), "GET");
 registerRoute(({ url }) => url.origin.includes("fonts.g"), new CacheFirst({ cacheName: "fonts" }));
