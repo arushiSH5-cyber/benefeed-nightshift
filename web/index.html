@@ -16,6 +16,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 </head>
 <body>
+<script>
+// Demo link: ?demo resets everything so the app always opens at the quiz (keeps the language choice).
+try { if (/[?&]demo\b/.test(location.search)) { var l = localStorage.getItem("bfns_lang");
+  Object.keys(localStorage).filter(function (k) { return k.indexOf("bfns_") === 0; }).forEach(function (k) { localStorage.removeItem(k); });
+  if (/[?&]fr\b/.test(location.search)) l = "fr"; if (l) localStorage.setItem("bfns_lang", l); } } catch (e) {}
+</script>
 <div id="root"></div>
 <script>
 // Self-heal: if the app script fails to load (stale cache after a deploy) or the app never mounts,
