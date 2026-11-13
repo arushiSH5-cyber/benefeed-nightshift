@@ -80,8 +80,14 @@ def run(job: dict, pu: PhoneUse, device: str, saver: SqliteSaver):
 
 
 def main():
-    pu = HostedPhoneUse() if os.environ.get("PHONEUSE_MODE", "hosted") == "hosted" else PhoneUse()
-    saver = SqliteSaver.from_conn_string(str(STATE / "checkpoints.db")).__enter__()
+    mode = os.environ.get("PHONEUSE_MODE", "hosted")
+    if mode == "browser":
+        from .browserphone import BrowserPhone
+        pu = BrowserPhone()
+    else:
+        pu = HostedPhoneUse() if mode == "hosted" else PhoneUse()
+    import sqlite3
+    saver = SqliteSaver(sqlite3.connect(str(STATE / "checkpoints.db"), check_same_thread=False))
     print("runner up, server:", SERVER)
     while True:
         try:

@@ -123,6 +123,13 @@ fern_check → plan → phone_tasks (observe → decide → act → verify) → 
 uv run pytest -q   # 25 passed: hard stop, approvals, allowlists, injection page, Skip never taps
 ```
 
+## ▶ Live automation demo (one command)
+```bash
+./demo.sh            # phone-sized browser on this Mac: real Claude + LangGraph crew, live
+./demo.sh hosted     # same crew on a PhoneUse cloud phone
+```
+Open `http://localhost:8090/?demo` and tap **▶ Watch it now**. The badge turns **● Live**. Bun fills the practice portal's 4 screens in about 11 real steps and stops with 🔒 at **Submit**. **Hold to submit** resumes the LangGraph `interrupt()`, the crew taps Submit and Confirm, and the portal stores the application. Tested end to end on Nov 13.
+
 ## Run it yourself
 ```bash
 cd web && npm ci && npm run build && cd ..
