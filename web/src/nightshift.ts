@@ -132,9 +132,24 @@ async function runReplay() {
       if (t.length) { replayTasks = t; source = "recording"; }
     } catch { /* fall back to the bundled demo */ }
   }
+  if (source === "demo") {  // no server: play the bundled real run from the PhoneUse cloud Pixel
+    try {
+      const base = import.meta.env.BASE_URL || "/";
+      const rec = await fetch(base + "rec/cloud-run.json").then((r) => r.json()) as { steps: { task_id: string; agent: string; text: string; stop: boolean; shot: string | null }[] };
+      const steps = rec.steps.filter((x) => x.agent === "bun" && x.shot);
+      if (steps.length) {
+        const k = steps.findIndex((x) => x.stop);
+        const conv = (x: (typeof steps)[number]): [Screen, string, boolean] => [{ shot: base + x.shot }, x.text, x.stop];
+        const real: ReplayTask = { id: "calfresh", ag: "bun", steps: (k < 0 ? steps : steps.slice(0, k + 1)).map(conv), fin: DEMO[0].fin };
+        replayTasks = [real, ...DEMO.filter((d) => d.id !== "calfresh")];
+        source = "recording";
+      }
+    } catch { /* keep the bundled demo */ }
+  }
   const st: Record<string, TaskStatusT> = {};
   TASKS.forEach((t) => (st[t.id] = "queued"));
   set({ on: true, source, log: [], brief: false, st, runs: S.runs + 1, film: {}, trace: {} });
+  setTimeout(() => document.querySelector(".phone-wrap")?.scrollIntoView({ behavior: "smooth", block: "center" }), 300);
   set({ agent: "fern" });
   addLog("fern", "Fern checks 3 official pages via Tavily (fns.usda.gov, dhcs.ca.gov, irs.gov)");
   set({ pages: S.pages + 3 });
@@ -142,7 +157,7 @@ async function runReplay() {
   set({ agent: "pip" });
   addLog("pip", "Pip asks PhoneUse for your iPhone and holds it for 10 minutes");
   await sleep(1000);
-  for (const t of replayTasks) {
+  for (const t of replayTasks.filter((x) => !only || x.id === only)) {
     if (g !== gen) return;
     set({ st: { ...S.st, [t.id]: "running" }, agent: t.ag });
     const film: Frame[] = [];
@@ -249,6 +264,8 @@ async function runLive() {
 }
 
 // ---------- public actions ----------
+let only: string | null = null;  // "Apply for me" runs just that application
+export async function applyFor(id: string) { if (S.on) return; only = id; try { await runNight(); } finally { only = null; } }
 export async function runNight() {
   if (S.on) return;
   await refreshStatus();

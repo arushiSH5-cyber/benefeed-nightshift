@@ -146,7 +146,7 @@ export default function App() {
       saveS((x) => (x.saved.includes(id) ? x : { ...x, saved: [...x.saved, id] }));
       if (id === "snap") {  // the one application Bun can fill on the phone today (practice portal)
         go("crew");
-        if (NS.getProfile()) { toast("Bun is applying for SNAP on the phone"); NS.runNight(); }
+        if (NS.getProfile()) { toast("Bun is applying for SNAP on the phone"); NS.applyFor("calfresh"); }
         else { try { sessionStorage.setItem("bfns_apply", "snap"); } catch { /* */ } toast("Add your details once, then Bun applies for you"); }
       } else {
         toast("Saved to My plan. Bun can fill SNAP for you today; for this one, here's the official way to apply");
@@ -367,7 +367,8 @@ function Feed({ onQuiz, mode, u, s, M, ns, playing, setPlaying, onAct, openSheet
             <div className="info">
               <div className="who">{p.prog.split(" (")[0]} <I h={IC.check} style={{ display: "contents" }} /> {p.level && <span className="pill lvl">{LV[p.level]}</span>} <span className={"pill " + (m.level === "likely" ? "" : "maybe")}>{m.level === "likely" ? "You likely qualify" : "You might qualify"}</span></div>
               <p data-r>{p.what}</p>
-              <div className="ctas"><button className="cta" onClick={() => onAct("apply:" + p.id)}>🤖 Apply for me</button><button className="cta ghost" onClick={() => openSheet({ k: "details", id: p.id, t: "apply" })}>How to apply</button><button className="cta ghost" onClick={() => openSheet({ k: "details", id: p.id, t: "src" })}><I h={IC.doc} style={{ display: "contents" }} />Sources</button></div>
+              {p.id === "snap" && ns.on && ns.log[0] && <div role="status" style={{ display: "flex", gap: 8, alignItems: "center", background: "rgba(111,132,180,.14)", borderRadius: 12, padding: "8px 10px", margin: "6px 0", fontSize: 14 }}><span style={{ width: 9, height: 9, borderRadius: 9, background: "#e05555", flex: "none", animation: "pulse 1s infinite" }} /><span><b>Bun is applying on the phone:</b> {ns.log[0].text}</span></div>}
+              <div className="ctas"><button className="cta" onClick={() => onAct("apply:" + p.id)}>{p.id === "snap" && ns.on ? "🤖 Watch Bun apply" : "🤖 Apply for me"}</button><button className="cta ghost" onClick={() => openSheet({ k: "details", id: p.id, t: "apply" })}>How to apply</button><button className="cta ghost" onClick={() => openSheet({ k: "details", id: p.id, t: "src" })}><I h={IC.doc} style={{ display: "contents" }} />Sources</button></div>
             </div>
             <div className="rail">
               <button className="rb" aria-label="Who it's for" onClick={() => openSheet({ k: "details", id: p.id, t: "who" })}><I className="av" h={c.ic} /></button>
@@ -602,7 +603,7 @@ function Crew({ ns, onAct, openSheet }: { ns: ReturnType<typeof NS.useNS>; onAct
       </div>
       <Setup busy={busy} />
       <div className="crewrow">{Object.entries(AG).map(([k, a]) => <span key={k} className={ns.agent === k ? "on" : ""}><I h={cr(k)} style={{ display: "contents" }} />{a[0]}<small style={{ fontWeight: 400 }}>{a[1]}</small></span>)}</div>
-      <div className="phone-wrap" onPointerMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty("--ry", ((e.clientX - r.left) / r.width - 0.5) * 30 + "deg"); e.currentTarget.style.setProperty("--rx", (0.5 - (e.clientY - r.top) / r.height) * 20 + "deg"); }} onPointerLeave={(e) => { e.currentTarget.style.removeProperty("--ry"); e.currentTarget.style.removeProperty("--rx"); }}><Phone screen={ns.cur} badge={ns.mode === "live" ? "via PhoneUse · cloud phone" : ns.source === "recording" ? "Replay of a real crew run" : "Replay · demo run"} /></div>
+      <div className="phone-wrap" onPointerMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty("--ry", ((e.clientX - r.left) / r.width - 0.5) * 30 + "deg"); e.currentTarget.style.setProperty("--rx", (0.5 - (e.clientY - r.top) / r.height) * 20 + "deg"); }} onPointerLeave={(e) => { e.currentTarget.style.removeProperty("--ry"); e.currentTarget.style.removeProperty("--rx"); }}><Phone screen={ns.cur} badge={ns.mode === "live" ? "via PhoneUse · cloud phone" : "shot" in ns.cur ? "Real run · PhoneUse cloud Pixel" : "Replay · demo run"} /></div>
       <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
         {busy ? <button className="btn red wide" onClick={() => onAct("stop")}>■ Stop everything</button>
           : <><button className="btn" onClick={() => onAct("run")}>▶ Run night shift now</button>{r > 0 && <button className="btn ghost" onClick={() => openSheet({ k: "review" })}>Review ({r})</button>}</>}
@@ -650,7 +651,7 @@ function Setup({ busy }: { busy: boolean }) {
   return (
     <form className="card" aria-label="One-time setup" onSubmit={(e) => { e.preventDefault(); if (!ok) return; const c = { ...f, name: f.name.trim(), city: f.city.trim() }; NS.saveProfile(c); setP(c); setEdit(null);
       let pend = null; try { pend = sessionStorage.getItem("bfns_apply"); sessionStorage.removeItem("bfns_apply"); } catch { /* */ }
-      if (pend) NS.runNight(); }}>
+      if (pend) NS.applyFor("calfresh"); }}>
       <b>One-time setup</b> <small className="note">· the crew fills the form with these details only. No SSN, no ID.</small>
       <label style={row}>Your first name<input style={inp} value={f.name} maxLength={30} onChange={(e) => up("name", e.target.value)} /></label>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
