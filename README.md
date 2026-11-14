@@ -10,6 +10,8 @@ A crew of four AI helpers works overnight **on a real phone**. They fill in a be
 
 [**🌐 Project website (3D)**](https://arushish5-cyber.github.io/benefeed-nightshift/about/) · [**▶ Open the app**](https://arushish5-cyber.github.io/benefeed-nightshift/?demo)
 
+> 🎬 **Judges: our demo video is on our project website.** Open the [**project website → Video**](https://arushish5-cyber.github.io/benefeed-nightshift/about/#video) to watch it. The real cloud-phone run is [here (MP4)](docs/cloud-pixel-run.mp4).
+
 [<img src="docs/video-poster.jpg" width="260" alt="▶ Watch the 2½-minute video">](https://arushish5-cyber.github.io/benefeed-nightshift/about/#video)<br><sub>▶ Click to watch the 2½-minute narrated video</sub>
 
 <img src="docs/demo.gif" width="260" alt="Benefeed demo: onboarding, feed, crew on the phone, hard stop, morning card, review">&nbsp;&nbsp;&nbsp;<img src="docs/qr.png" width="170" alt="QR code: open Benefeed on your phone">

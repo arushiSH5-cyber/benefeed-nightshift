@@ -10,6 +10,8 @@ Une équipe de quatre assistants IA travaille la nuit **sur un vrai téléphone*
 
 [**🌐 Site du projet (3D)**](https://arushish5-cyber.github.io/benefeed-nightshift/about/) · [**▶ Ouvrir l'app**](https://arushish5-cyber.github.io/benefeed-nightshift/?demo&fr)
 
+> 🎬 **Jury : notre vidéo de démo est sur le site du projet.** Ouvrez le [**site du projet → Vidéo**](https://arushish5-cyber.github.io/benefeed-nightshift/about/#video). Le vrai passage sur le téléphone cloud est [ici (MP4)](docs/cloud-pixel-run.mp4).
+
 [<img src="docs/video-poster.jpg" width="240" alt="▶ Voir la vidéo">](https://arushish5-cyber.github.io/benefeed-nightshift/about/#video) · [🎬 Vidéo (thème nuit)](docs/benefeed-explainer-night.mp4) · [🎬 Vidéo (thème jour)](docs/benefeed-explainer-light.mp4)
 
 <img src="docs/live-automation.gif" width="220" alt="L'équipe remplit le formulaire en direct">&nbsp;&nbsp;<img src="docs/qr.png" width="170" alt="QR code">
