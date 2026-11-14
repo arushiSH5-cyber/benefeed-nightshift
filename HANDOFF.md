@@ -34,3 +34,13 @@ Then rebuild `npm run build` (base `/`) for the local server. Pages caches for a
 2. Live mode runs only task A (CalFresh). Calendar and Messages tasks have no browser-phone equivalent; they show in the replay only.
 3. A few strings stay English in FR mode (the banner text split across nodes, the mock phone form labels).
 4. Optional keys not set: ElevenLabs (the voice falls back to the device voice), LangSmith.
+
+## 🔴 IN PROGRESS (Nov 13, ~4:40 PM): live run on the friend's PhoneUse cloud Pixel
+- `.env` PHONEUSE_API_KEY = the **friend's** key (her own key is saved as PHONEUSE_API_KEY_MINE). His device: `APP6968R8KWDFK0D` (Pixel 7 Pro, Android 13, backend `adb_cloud`). Lease/screenshot/release tested OK.
+- **This backend has NO ui_snapshot** (uiTree:false). Capabilities: tap, swipe, type_text, press_key (enter/back/home…), open_app (intent), screenshot. Grid 0–1000.
+- DONE: `runner/ocr.py` (Apple Vision OCR → labels + boxes in the 0–1000 grid). Tested: reads "Chrome" etc. from the Pixel screenshot.
+- TODO, in order:
+  1. In `runner/hosted.py`: `source_fast`/`find_elements`/`element_click`/`element_fill` must use `ocr.read(self.screenshot(dev))` instead of `ui_snapshot`. Fill = tap the label box (or the field below it), sleep 0.4, `type_text`. `open_url` = open_app Chrome → tap the address bar (OCR "Search or type" / the URL bar near the top) → type_text url → press_key enter. The guard keeps working: labels come from OCR pixels, and `_check_tap_point` uses OCR rects (`window_size` = 1000x1000).
+  2. The cloud phone can't reach localhost, so put a **static practice portal on GitHub Pages**: `web/public/practice/` (index → income → contact → review with Submit below the fold + confirm → done), values passed in the query string, banner "PRACTICE PORTAL · NOT A REAL AGENCY". Prefer radio buttons over `<select>` (easier on Android). The SW already denylists `/practice`. Then set env `PORTAL_URL=https://arushish5-cyber.github.io/benefeed-nightshift` and make `Phone(...)` in `runner/main.py` use `os.environ.get("PORTAL_URL", SERVER)` as the portal base (crew goal uses `{portal}/practice`).
+  3. Test: `CREW_TASKS=calfresh ./demo.sh hosted` (or run server + `PHONEUSE_MODE=hosted uv run python -m runner.main`), POST /api/runs, watch for "Hard stop", approve via /api/runs/<id>/approve.
+- Demo script for judges is in the chat: friend's PhoneUse console shows the phone live; her phone (owner link) approves.
