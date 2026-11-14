@@ -2,6 +2,8 @@
 
 # 🌙 Benefeed Night Shift
 
+🇬🇧 **English** · 🇫🇷 [Français](README.fr.md)
+
 ### You're on Do Not Disturb. Your crew isn't.
 
 A crew of four AI helpers works overnight **on a real phone**. They fill in a benefits application, add the deadlines to the calendar and draft a text to a family helper. Then they **stop before every final tap** and wait for your yes.
@@ -41,7 +43,10 @@ This is **not a mock-up**. It's a screen recording of a live run: **Claude, driv
 <br clear="right">
 
 ## 🎬 Demo videos
-▶ **[Watch the demo (English, 21 s)](docs/demo-en.mp4)** · ▶ **[Voir la démo (Français, 18 s)](docs/demo-fr.mp4)**
+**The 3-minute story** (problem → our real app → live automation → human approval → PhoneUse → why we stand out → what we built), in English + French:
+▶ **[Night theme](docs/benefeed-explainer-night.mp4)** · ▶ **[Light theme](docs/benefeed-explainer-light.mp4)**
+
+Short cuts: ▶ **[Watch the demo (English, 21 s)](docs/demo-en.mp4)** · ▶ **[Voir la démo (Français, 18 s)](docs/demo-fr.mp4)**
 
 ## 🌍 Countries and levels
 Pick your country in onboarding: 🇺🇸 **USA**, 🇫🇷 **France** or 🇬🇧 **UK**. Every card shows its level (🏛️ Federal / National, 🗺️ State, 🏘️ Local) and its official source.
@@ -98,13 +103,15 @@ When no phone is connected, the app plays a clearly labelled **Replay**, so it a
 ## Sponsors and what each one does
 | Sponsor | Job in Benefeed |
 |---|---|
-| **PhoneUse** | The crew's hands: a hosted cloud phone driven over MCP (`ui_snapshot`, `tap`, `type_text`, `open_app`, `screenshot`) |
+| **PhoneUse** 💛 | The crew's hands: a hosted cloud phone driven over MCP (`ui_snapshot`, `tap`, `type_text`, `open_app`, `screenshot`) |
 | **LangChain / LangGraph** | The crew's brain: one graph with SQLite checkpoints, and `interrupt()` before every final tap, so you can approve hours later |
 | **LangSmith** | Traces every node, tool call and model call ("See trace ↗" on each task) |
 | **Anthropic Claude** | Picks the next action from a tiny tool set; output is validated with pydantic |
 | **Tavily** | Fern's eyes: `include_domains` limited to official sites; stores url, date, sha256 and the quote |
 | **ElevenLabs** | Pip's voice: the morning briefing and the Spanish voice note (Web Speech as fallback) |
 | **GitHub Pages** | Hosts the installable PWA behind the QR code |
+
+> 💛 **Thank you, PhoneUse.** This demo only exists because of what you built: giving an AI real hands on a real phone, safely.
 
 ## Architecture
 ```mermaid
