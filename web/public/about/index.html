@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Benefeed Night Shift</title>
+<meta name="description" content="You're on Do Not Disturb. Your crew isn't. AI helpers work a real phone overnight to get benefits ready, and stop before every final tap.">
+<link rel="icon" href="../icons/pip.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root{--bg:#0c1124;--bg2:#18203f;--card:#141b35;--line:#2a3463;--ink:#eef0ff;--soft:#a3a9cf;--fr:#b9c3ff;--accent:#8c9cff;--gold:#ffd98a;--ok:#86dbb4;--no:#df8f8f;--disp:"Fredoka",system-ui,sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif;color-scheme:dark}
+:root[data-theme="light"]{--bg:#e4e9f2;--bg2:#fbf6ea;--card:#fffdf8;--line:#e2dccb;--ink:#3e3b4f;--soft:#7a7686;--fr:#566a99;--accent:#6f84b4;--gold:#b7791f;--ok:#5e6d3d;--no:#c06060;color-scheme:light}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);color:var(--ink);background:linear-gradient(180deg,var(--bg),var(--bg2) 60%,var(--bg));min-height:100vh;overflow-x:hidden}
+a{color:inherit}
+.stars{position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(1.5px 1.5px at 20% 30%,#c9d3ff 50%,transparent 51%),radial-gradient(1px 1px at 70% 20%,#c9d3ff 50%,transparent 51%),radial-gradient(1.2px 1.2px at 40% 80%,#c9d3ff 50%,transparent 51%),radial-gradient(1px 1px at 85% 65%,#c9d3ff 50%,transparent 51%),radial-gradient(1.5px 1.5px at 10% 70%,#c9d3ff 50%,transparent 51%);background-size:400px 400px;opacity:.5;animation:tw 6s ease-in-out infinite}
+[data-theme="light"] .stars{opacity:0}
+@keyframes tw{50%{opacity:.25}}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px;position:relative}
+nav{display:flex;align-items:center;gap:10px;padding:18px 0}
+nav b{font-family:var(--disp);font-size:22px;flex:1}
+.pill{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:700;font-size:14px;cursor:pointer;text-decoration:none}
+.pill.on{background:var(--accent);color:#0c1124;border-color:transparent}
+h1,h2,h3{font-family:var(--disp);margin:0;line-height:1.08}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;padding:30px 0 60px}
+.hero h1{font-size:clamp(40px,6vw,72px)}
+.fr{color:var(--fr);font-style:italic}
+.lead{font-size:19px;color:var(--soft);max-width:46ch}
+.ctas{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:16px;padding:14px 20px;font-family:var(--disp);font-weight:600;font-size:18px;text-decoration:none;background:var(--accent);color:#0c1124;box-shadow:0 5px 0 #4f5cc0}
+.btn.ghost{background:var(--card);color:var(--ink);box-shadow:0 5px 0 var(--line)}
+.stage{perspective:1100px;display:grid;place-items:center}
+.phone{width:300px;aspect-ratio:9/19;border-radius:44px;background:#262f55;padding:12px;transform:rotateY(-18deg) rotateX(8deg);transform-style:preserve-3d;transition:transform .2s ease-out;box-shadow:-30px 40px 80px -30px rgba(0,0,0,.7),0 0 0 1px #3a4577;animation:float 6s ease-in-out infinite}
+.phone iframe{width:100%;height:100%;border:0;border-radius:34px;background:#fbf6ea}
+@keyframes float{50%{translate:0 -12px}}
+.glow{position:absolute;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(140,156,255,.35),transparent 65%);filter:blur(10px);z-index:-1}
+section{padding:60px 0}
+.tag{display:inline-block;background:var(--accent);color:#0c1124;font-weight:800;font-size:13px;letter-spacing:.06em;border-radius:999px;padding:6px 14px;margin-bottom:14px}
+h2{font-size:clamp(30px,4vw,46px);margin-bottom:8px}
+.video{display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:center}
+.video video{width:min(340px,80vw);border-radius:28px;box-shadow:0 30px 70px -30px rgba(0,0,0,.7),0 0 0 1px var(--line);transform:perspective(900px) rotateY(10deg);transition:transform .4s}
+.video video:hover{transform:none}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:24px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:20px;transition:transform .25s,box-shadow .25s;transform-style:preserve-3d}
+.card:hover{transform:translateY(-6px) rotateX(4deg);box-shadow:0 24px 40px -24px rgba(0,0,0,.6)}
+.card h3{font-size:22px;margin-bottom:6px}.card p{margin:0;color:var(--soft)}
+.carousel{height:520px;perspective:1400px;display:grid;place-items:center;margin-top:20px}
+.ring{position:relative;width:220px;height:470px;transform-style:preserve-3d;animation:spin 36s linear infinite}
+.carousel:hover .ring{animation-play-state:paused}
+.ring img{position:absolute;inset:0;width:220px;height:470px;object-fit:cover;border-radius:26px;border:8px solid #262f55;box-shadow:0 20px 40px -20px #000;backface-visibility:hidden}
+@keyframes spin{to{transform:rotateY(-360deg)}}
+.steps{display:grid;gap:12px;margin-top:20px}
+.step{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px}
+.step i{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-style:normal;font-family:var(--disp);font-size:24px;background:var(--accent);color:#0c1124}
+code{font-family:Menlo,monospace;font-size:13.5px;color:var(--ok);background:rgba(0,0,0,.25);padding:2px 8px;border-radius:8px}
+.step.stop i{background:var(--no)}
+table{width:100%;border-collapse:separate;border-spacing:0 8px;margin-top:20px}
+td,th{padding:14px;text-align:center}td:first-child,th:first-child{text-align:left}
+tr td{background:var(--card)}tr td:first-child{border-radius:14px 0 0 14px}tr td:last-child{border-radius:0 14px 14px 0}
+.y{color:var(--ok);font-weight:800}.n{color:var(--no);font-weight:800}
+.sponsors{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+.sp{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 18px}
+.sp b{font-family:var(--disp);font-size:20px;display:block}.sp small{color:var(--soft)}
+.sp.hero2{border-color:var(--gold)}.sp.hero2 b{color:var(--gold)}
+.end{text-align:center;padding:80px 0}
+.end img{width:180px;border-radius:20px;background:#fff;padding:10px}
+footer{text-align:center;color:var(--soft);padding:30px 0 50px;font-size:14px}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .8s,transform .8s}.reveal.in{opacity:1;transform:none}
+@media (max-width:820px){.hero,.video{grid-template-columns:1fr}.stage{margin-top:10px}.phone{width:260px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="wrap">
+<nav><b>🌙 Benefeed</b>
+  <button class="pill" id="lang">🇫🇷 Français</button>
+  <button class="pill" id="theme">☀️ Light</button>
+  <a class="pill" href="https://github.com/arushiSH5-cyber/benefeed-nightshift">GitHub ↗</a>
+</nav>
+
+<header class="hero">
+  <div>
+    <span class="tag">DO NOT DISTURB HACKATHON × PHONEUSE</span>
+    <h1 data-en="You're on Do Not Disturb. Your crew isn't." data-fr="Vous êtes en Ne pas déranger. Votre équipe, non.">You're on Do Not Disturb. Your crew isn't.</h1>
+    <p class="lead" data-en="Four AI helpers work a real phone overnight: they fill in benefit applications, add deadlines, draft a text to your helper, then stop before every final tap and wait for your yes." data-fr="Quatre assistants IA travaillent sur un vrai téléphone la nuit : ils remplissent les demandes d'aides, ajoutent les échéances, rédigent un message, puis s'arrêtent avant chaque action finale et attendent votre oui.">Four AI helpers work a real phone overnight: they fill in benefit applications, add deadlines, draft a text to your helper, then stop before every final tap and wait for your yes.</p>
+    <div class="ctas">
+      <a class="btn" href="../?demo" data-en="▶ Try the app" data-fr="▶ Essayer l'app">▶ Try the app</a>
+      <a class="btn ghost" href="#video" data-en="🎬 Watch the video" data-fr="🎬 Voir la vidéo">🎬 Watch the video</a>
+    </div>
+  </div>
+  <div class="stage" id="stage"><div class="glow"></div>
+    <div class="phone" id="phone"><iframe src="../?demo" title="Benefeed, live app" loading="lazy"></iframe></div>
+  </div>
+</header>
+
+<section id="video" class="reveal">
+  <div class="video">
+    <video id="vid" src="benefeed-explainer-night.mp4" poster="poster.jpg" controls playsinline preload="metadata"></video>
+    <div>
+      <span class="tag" data-en="THE 2½-MINUTE STORY" data-fr="L'HISTOIRE EN 2 MIN 30">THE 2½-MINUTE STORY</span>
+      <h2 data-en="From the problem to a real, safe automation" data-fr="Du problème à une vraie automatisation, en sécurité">From the problem to a real, safe automation</h2>
+      <p class="lead" data-en="Narrated, with English and French on screen: our real app recorded live, how it connects to a website, every real automation step, real portals and CAPTCHAs, and human approval." data-fr="Narration et sous-titres en anglais et en français : l'app enregistrée en direct, la connexion au site, chaque vraie étape, les vrais portails, les CAPTCHA et votre validation.">Narrated, with English and French on screen: our real app recorded live, how it connects to a website, every real automation step, real portals and CAPTCHAs, and human approval.</p>
+      <div class="ctas"><button class="pill on" data-v="night">🌙 Night</button><button class="pill" data-v="light">☀️ Light</button><a class="pill" href="live-automation.mp4">🤖 Raw automation run ↗</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <span class="tag" data-en="THE PROBLEM" data-fr="LE PROBLÈME">THE PROBLEM</span>
+  <h2 data-en="$58 billion a year, never claimed" data-fr="58 milliards de dollars par an, jamais réclamés">$58 billion a year, never claimed</h2>
+  <p class="lead" data-en="9.1M older adults miss benefits they qualify for (NCOA). Not because they don't care: because of forms, portals and deadlines on a tiny screen." data-fr="9,1 millions de personnes âgées ratent des aides auxquelles elles ont droit (NCOA), à cause des formulaires, des portails et des échéances sur un petit écran.">9.1M older adults miss benefits they qualify for (NCOA). Not because they don't care: because of forms, portals and deadlines on a tiny screen.</p>
+  <div class="cards">
+    <div class="card"><h3>🐦 Pip</h3><p data-en="Finds your help from 3 questions. No account, no SSN." data-fr="Trouve vos aides en 3 questions. Sans compte.">Finds your help from 3 questions. No account, no SSN.</p></div>
+    <div class="card"><h3>🐸 Fern</h3><p data-en="Checks every fact on official .gov sites with Tavily." data-fr="Vérifie chaque info sur les sites officiels.">Checks every fact on official .gov sites with Tavily.</p></div>
+    <div class="card"><h3>🐰 Bun</h3><p data-en="Fills the application on the phone itself." data-fr="Remplit la demande sur le téléphone.">Fills the application on the phone itself.</p></div>
+    <div class="card"><h3>☁️ Nimbus</h3><p data-en="Adds deadlines to your calendar, with the official link." data-fr="Ajoute les échéances à votre agenda.">Adds deadlines to your calendar, with the official link.</p></div>
+  </div>
+</section>
+
+<section class="reveal">
+  <span class="tag" data-en="EVERY SCREEN · HOVER TO PAUSE" data-fr="CHAQUE ÉCRAN · SURVOLEZ POUR ARRÊTER">EVERY SCREEN · HOVER TO PAUSE</span>
+  <h2 data-en="The real app, in 3D" data-fr="La vraie app, en 3D">The real app, in 3D</h2>
+  <div class="carousel"><div class="ring" id="ring">
+    <img src="1-hello.jpg" alt="Pip says hi"><img src="fr-quiz.jpg" alt="Swipe quiz in French"><img src="3-crew-finds.jpg" alt="The crew finds help"><img src="5-feed.jpg" alt="Feed"><img src="fr-feed.jpg" alt="French programs"><img src="6-crew-live.jpg" alt="Crew working the phone"><img src="7-hard-stop.jpg" alt="Hard stop"><img src="8-morning.jpg" alt="Good morning"><img src="9-review.jpg" alt="Hold to approve">
+  </div></div>
+</section>
+
+<section class="reveal">
+  <span class="tag" data-en="HOW THE AUTOMATION WORKS" data-fr="COMMENT ÇA MARCHE">HOW THE AUTOMATION WORKS</span>
+  <h2 data-en="No API, no backdoor: it uses the website like you do" data-fr="Pas d'API cachée : il utilise le site comme vous">No API, no backdoor: it uses the website like you do</h2>
+  <div class="steps">
+    <div class="step"><i>1</i><div><b data-en="A real phone opens the site" data-fr="Un vrai téléphone ouvre le site">A real phone opens the site</b><br><code>open_url("…/practice")</code></div></div>
+    <div class="step"><i>2</i><div><b data-en="It reads the screen (labels, fields, buttons) and Claude picks ONE action" data-fr="Il lit l'écran, Claude choisit UNE action">It reads the screen (labels, fields, buttons) and Claude picks ONE action</b><br><code>fill("How many people live with you?", "2")</code></div></div>
+    <div class="step"><i>3</i><div><b data-en="PhoneUse taps & types, then it looks again to verify" data-fr="PhoneUse tape et écrit, puis revérifie">PhoneUse taps &amp; types, then it looks again to verify</b><br><code>tap("Next") → not final → allowed</code></div></div>
+    <div class="step stop"><i>🔒</i><div><b data-en="A final button? The guard blocks it and LangGraph pauses" data-fr="Bouton final ? Bloqué, l'équipe attend votre oui">A final button? The guard blocks it and LangGraph pauses</b><br><code>tap("Submit") → FINAL → HardStop → interrupt()</code></div></div>
+    <div class="step"><i>✓</i><div><b data-en="You hold to approve, and only then: Submit → Confirm" data-fr="Vous maintenez pour valider : envoyé">You hold to approve, and only then: Submit → Confirm</b><br><code>approval #1 → tap("Submit") → tap("Confirm")</code></div></div>
+    <div class="step"><i>🧩</i><div><b data-en="Real portals: you log in yourself; CAPTCHAs, codes and ID uploads go back to you" data-fr="Vrais sites : vous vous connectez ; les CAPTCHA vous reviennent">Real portals: you log in yourself; CAPTCHAs, codes and ID uploads go back to you</b></div></div>
+  </div>
+</section>
+
+<section class="reveal">
+  <span class="tag" data-en="WHY WE STAND OUT" data-fr="POURQUOI NOUS">WHY WE STAND OUT</span>
+  <table><tr><th></th><th data-en="Benefit sites" data-fr="Sites d'aides">Benefit sites</th><th>Chatbots</th><th>Benefeed</th></tr>
+    <tr><td data-en="Finds your help" data-fr="Trouve vos aides">Finds your help</td><td>~</td><td>~</td><td class="y">✓</td></tr>
+    <tr><td data-en="Fills the forms" data-fr="Remplit les formulaires">Fills the forms</td><td class="n">✗</td><td class="n">✗</td><td class="y">✓</td></tr>
+    <tr><td data-en="Works in real apps" data-fr="Agit dans de vraies apps">Works in real apps</td><td class="n">✗</td><td class="n">✗</td><td class="y">✓</td></tr>
+    <tr><td data-en="Waits for your yes" data-fr="Attend votre oui">Waits for your yes</td><td>–</td><td class="n">✗</td><td class="y">✓</td></tr>
+    <tr><td data-en="Official source per fact" data-fr="Source officielle">Official source per fact</td><td class="y">✓</td><td class="n">✗</td><td class="y">✓</td></tr>
+    <tr><td data-en="🇺🇸 🇫🇷 🇬🇧, English + Français" data-fr="🇺🇸 🇫🇷 🇬🇧, anglais + français">🇺🇸 🇫🇷 🇬🇧, English + Français</td><td>~</td><td>~</td><td class="y">✓</td></tr>
+  </table>
+</section>
+
+<section class="reveal">
+  <span class="tag" data-en="BUILT WITH" data-fr="CONSTRUIT AVEC">BUILT WITH</span>
+  <h2 data-en="💛 Thank you, PhoneUse" data-fr="💛 Merci PhoneUse">💛 Thank you, PhoneUse</h2>
+  <div class="sponsors">
+    <div class="sp hero2"><b>PhoneUse</b><small data-en="the crew's hands on a real phone" data-fr="les mains de l'équipe">the crew's hands on a real phone</small></div>
+    <div class="sp"><b>LangGraph</b><small>brain + interrupt()</small></div>
+    <div class="sp"><b>Claude</b><small data-en="decides each step" data-fr="décide chaque étape">decides each step</small></div>
+    <div class="sp"><b>LangSmith</b><small>traces</small></div>
+    <div class="sp"><b>Tavily</b><small data-en="official fact checks" data-fr="vérifications officielles">official fact checks</small></div>
+    <div class="sp"><b>ElevenLabs</b><small data-en="Pip's voice" data-fr="la voix de Pip">Pip's voice</small></div>
+  </div>
+  <div class="cards">
+    <div class="card"><h3>3</h3><p data-en="countries" data-fr="pays">countries</p></div>
+    <div class="card"><h3>30</h3><p data-en="programs, each with an official source" data-fr="aides, chacune avec sa source">programs, each with an official source</p></div>
+    <div class="card"><h3>25</h3><p data-en="safety tests passing" data-fr="tests de sécurité">safety tests passing</p></div>
+    <div class="card"><h3>0</h3><p data-en="taps without your yes" data-fr="action sans votre oui">taps without your yes</p></div>
+  </div>
+</section>
+
+<section class="end reveal">
+  <img src="qr.png" alt="QR code to open Benefeed">
+  <h2 style="margin-top:20px" data-en="Try it on your phone" data-fr="Essayez-le sur votre téléphone">Try it on your phone</h2>
+  <div class="ctas" style="justify-content:center"><a class="btn" href="../?demo" data-en="▶ Open Benefeed" data-fr="▶ Ouvrir Benefeed">▶ Open Benefeed</a><a class="btn ghost" href="https://github.com/arushiSH5-cyber/benefeed-nightshift">GitHub ↗</a></div>
+</section>
+<footer data-en="Built solo at the Do Not Disturb Hackathon × PhoneUse · San Francisco · Nov 13 2026" data-fr="Construit seule au Do Not Disturb Hackathon × PhoneUse · San Francisco · 13 nov. 2026">Built solo at the Do Not Disturb Hackathon × PhoneUse · San Francisco · Nov 13 2026</footer>
+</div>
+<script>
+// 3D carousel: place the 9 screens on a ring
+const ring = document.getElementById("ring"), imgs = [...ring.children], n = imgs.length, r = Math.round(140 / Math.tan(Math.PI / n));
+imgs.forEach((im, i) => im.style.transform = `rotateY(${i * 360 / n}deg) translateZ(${r}px)`);
+// Hero phone tilts toward the pointer
+const ph = document.getElementById("phone"), st = document.getElementById("stage");
+st.addEventListener("pointermove", (e) => { const b = st.getBoundingClientRect(); const x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5; ph.style.transform = `rotateY(${x * 30}deg) rotateX(${-y * 20}deg)`; });
+st.addEventListener("pointerleave", () => ph.style.transform = "");
+// Reveal on scroll
+const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && e.target.classList.add("in")), { threshold: .15 });
+document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+// Video theme switch
+document.querySelectorAll("[data-v]").forEach((b) => b.onclick = () => { document.getElementById("vid").src = `benefeed-explainer-${b.dataset.v}.mp4`; document.querySelectorAll("[data-v]").forEach((x) => x.classList.toggle("on", x === b)); });
+// Page theme + language
+let light = false, fr = false;
+document.getElementById("theme").onclick = (e) => { light = !light; document.documentElement.dataset.theme = light ? "light" : ""; e.target.textContent = light ? "🌙 Night" : "☀️ Light"; };
+const setLang = () => { document.documentElement.lang = fr ? "fr" : "en"; document.querySelectorAll("[data-en]").forEach((el) => el.textContent = fr ? el.dataset.fr : el.dataset.en); document.getElementById("lang").textContent = fr ? "🇬🇧 English" : "🇫🇷 Français"; };
+document.getElementById("lang").onclick = () => { fr = !fr; setLang(); };
+if ((navigator.language || "").startsWith("fr")) { fr = true; setLang(); }
+</script>
+</body>
+</html>

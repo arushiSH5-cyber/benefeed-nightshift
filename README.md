@@ -8,7 +8,9 @@
 
 A crew of four AI helpers works overnight **on a real phone**. They fill in a benefits application, add the deadlines to the calendar and draft a text to a family helper. Then they **stop before every final tap** and wait for your yes.
 
-[**▶ Open the app on your phone**](https://arushish5-cyber.github.io/benefeed-nightshift/)
+[**🌐 Project website (3D)**](https://arushish5-cyber.github.io/benefeed-nightshift/about/) · [**▶ Open the app**](https://arushish5-cyber.github.io/benefeed-nightshift/?demo)
+
+[<img src="docs/video-poster.jpg" width="260" alt="▶ Watch the 2½-minute video">](https://arushish5-cyber.github.io/benefeed-nightshift/about/#video)<br><sub>▶ Click to watch the 2½-minute narrated video</sub>
 
 <img src="docs/demo.gif" width="260" alt="Benefeed demo: onboarding, feed, crew on the phone, hard stop, morning card, review">&nbsp;&nbsp;&nbsp;<img src="docs/qr.png" width="170" alt="QR code: open Benefeed on your phone">
 

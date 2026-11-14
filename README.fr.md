@@ -8,7 +8,9 @@
 
 Une équipe de quatre assistants IA travaille la nuit **sur un vrai téléphone** : elle remplit une demande d'aide, ajoute les échéances à l'agenda et rédige un message pour un proche. Puis elle **s'arrête avant chaque action finale** et attend votre oui.
 
-[**▶ Ouvrir l'app sur votre téléphone**](https://arushish5-cyber.github.io/benefeed-nightshift/?demo&fr) · [🎬 Vidéo (thème nuit)](docs/benefeed-explainer-night.mp4) · [🎬 Vidéo (thème jour)](docs/benefeed-explainer-light.mp4)
+[**🌐 Site du projet (3D)**](https://arushish5-cyber.github.io/benefeed-nightshift/about/) · [**▶ Ouvrir l'app**](https://arushish5-cyber.github.io/benefeed-nightshift/?demo&fr)
+
+[<img src="docs/video-poster.jpg" width="240" alt="▶ Voir la vidéo">](https://arushish5-cyber.github.io/benefeed-nightshift/about/#video) · [🎬 Vidéo (thème nuit)](docs/benefeed-explainer-night.mp4) · [🎬 Vidéo (thème jour)](docs/benefeed-explainer-light.mp4)
 
 <img src="docs/live-automation.gif" width="220" alt="L'équipe remplit le formulaire en direct">&nbsp;&nbsp;<img src="docs/qr.png" width="170" alt="QR code">
 

@@ -16,7 +16,7 @@ precacheAndRoute(self.__WB_MANIFEST);
 const pages = new NetworkFirst({ cacheName: "pages", networkTimeoutSeconds: 3 });
 registerRoute(new NavigationRoute(async (o) => {
   try { return await pages.handle(o); } catch { return (await caches.match(import.meta.env.BASE_URL + "index.html", { ignoreSearch: true })) || Response.error(); }
-}, { denylist: [/\/api\//, /\/practice/, /\/media\//] }));
+}, { denylist: [/\/api\//, /\/practice/, /\/media\//, /\/about/] }));
 // Network-first API, so offline still shows the last briefing and plan.
 registerRoute(({ url }) => url.pathname.startsWith("/api/") && !url.pathname.startsWith("/api/tts"), new NetworkFirst({ cacheName: "api", networkTimeoutSeconds: 4 }), "GET");
 registerRoute(({ url }) => url.origin.includes("fonts.g"), new CacheFirst({ cacheName: "fonts" }));
