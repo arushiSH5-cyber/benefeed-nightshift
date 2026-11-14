@@ -11,7 +11,7 @@ export default defineConfig({
       strategies: "injectManifest",
       srcDir: "src",
       filename: "sw.ts",
-      injectManifest: { globPatterns: ["**/*.{js,css,html,svg,png,woff2}"] },
+      injectManifest: { globPatterns: ["**/*.{js,css,html,svg,png,woff2}"], globIgnores: ["about/**", "practice/**", "404.html"] },
       manifest: {
         name: "Benefeed",
         short_name: "Benefeed",
