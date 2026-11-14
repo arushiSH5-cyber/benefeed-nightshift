@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Benefeed Night Shift</title>
+<meta name="description" content="You're on Do Not Disturb. Your crew isn't. Helpers use your phone overnight to get benefits ready, and wait for your yes.">
+<meta name="theme-color" content="#e4e9f2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Benefeed">
+<link rel="apple-touch-icon" href="/benefeed-nightshift/icons/apple-touch-icon.png">
+<link rel="icon" href="/benefeed-nightshift/icons/pip.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+  <script type="module" crossorigin src="/benefeed-nightshift/assets/index-CZ3VZtNk.js"></script>
+  <link rel="stylesheet" crossorigin href="/benefeed-nightshift/assets/index-DHqVBo1v.css">
+<link rel="manifest" href="/benefeed-nightshift/manifest.webmanifest"></head>
+<body>
+<script>
+// Demo link: ?demo resets everything so the app always opens at the quiz (keeps the language choice).
+try { if (/[?&]demo\b/.test(location.search)) { var l = localStorage.getItem("bfns_lang");
+  Object.keys(localStorage).filter(function (k) { return k.indexOf("bfns_") === 0; }).forEach(function (k) { localStorage.removeItem(k); });
+  if (/[?&]fr\b/.test(location.search)) l = "fr"; if (l) localStorage.setItem("bfns_lang", l); } } catch (e) {}
+</script>
+<div id="root"></div>
+<script>
+// Self-heal: if the app script fails to load (stale cache after a deploy) or the app never mounts,
+// drop the service worker + caches and reload once.
+(function(){
+  function heal(){ if (sessionStorage.getItem("bf_healed")) return; sessionStorage.setItem("bf_healed","1");
+    Promise.all([navigator.serviceWorker ? navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}) : 0,
+      window.caches ? caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))}) : 0]).then(function(){ location.reload(); }); }
+  window.addEventListener("error", function(e){ if (e.target && e.target.tagName === "SCRIPT") heal(); }, true);
+  setTimeout(function(){ var r = document.getElementById("root"); if (r && !r.children.length) heal(); }, 4000);
+})();
+</script>
+</body>
+</html>

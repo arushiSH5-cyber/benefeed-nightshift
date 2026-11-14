@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>Review & submit · Sunny County Help Desk (practice)</title><style>body{font-family:-apple-system,system-ui,sans-serif;margin:0;background:#fbf6ea;color:#3e3b4f;font-size:20px}
+.ban{background:#e6e2c6;padding:10px;text-align:center;font-weight:700;letter-spacing:.04em}
+main{padding:18px;max-width:520px;margin:auto}h1{font-size:28px}label.q{display:block;font-weight:700;margin:20px 0 8px}
+input[type=text]{width:100%;font-size:20px;padding:14px;border-radius:10px;border:1px solid #ccc;box-sizing:border-box}
+.r{display:block;padding:12px 4px;font-size:20px}.r input{transform:scale(1.4);margin-right:12px}
+button{width:100%;font-size:22px;padding:16px;border-radius:14px;border:0;background:#6f84b4;color:#fff;font-weight:700;margin-top:24px}
+.note{color:#7a7686;font-size:15px}.warn{background:#f2d2d2;padding:10px;border-radius:10px}
+dialog{border:0;border-radius:16px;padding:22px;max-width:320px}</style></head><body>
+<div class="ban">PRACTICE PORTAL · NOT A REAL AGENCY</div><main><p class="note">Sunny County Help Desk · practice application · step 4 of 4</p>
+<h1>Review & submit</h1><div id="rows"></div><p class="warn">Please read everything before you submit.</p><div style="height:70vh"></div>
+<form action="done.html" id="f"><button type="button" onclick="document.getElementById('c').showModal()">Submit</button>
+<dialog id="c"><p><b>Submit this application?</b></p><button type="submit">Confirm</button><button type="button" style="background:#ebe5d5;color:#3e3b4f" onclick="this.closest('dialog').close()">Cancel</button></dialog></form></main><script>const q=new URLSearchParams(location.search),F=['household', 'senior', 'income', 'paystub', 'city', 'calltime'];
+document.querySelectorAll('form').forEach(f=>F.forEach(k=>{if(q.get(k)&&!f.elements[k]){const i=document.createElement('input');i.type='hidden';i.name=k;i.value=q.get(k).slice(0,80);f.appendChild(i)}}));
+const rv=document.getElementById('rows');if(rv)rv.innerHTML=F.map(k=>'<p><b>'+k[0].toUpperCase()+k.slice(1)+':</b> '+(q.get(k)||'—').replace(/[<>&]/g,'')+'</p>').join('');</script></body></html>
