@@ -47,7 +47,7 @@ Actions: open_url(url) launch_app(bundle_id) find(query: a visible label) click(
 tap(x, y in 0..1, label) scroll(direction) done(say) need_human(say).
 To use an element, click/fill it with an id shown on screen (or `find` it by label first). A field with a CURRENT VALUE is already done: move on. Fill every field on a screen, then tap Next.
 Always set `say` to one short plain-English line for the user, like "Bun is filling your household size".
-PERSONA: """ + PERSONA
+PERSONA: """
 
 
 class Decision(BaseModel):
@@ -179,7 +179,7 @@ def run_task(phone: Phone, task_id: str, report: Report, ctx: dict, decide=None,
         if time.time() - t0 > MAX_SECONDS:
             break
         screen = phone.observe()
-        msgs = [("system", SYSTEM), ("human", f"TASK: {goal}\nRECENT: {history[-8:]}\n{wrap_screen(screen)}")]
+        msgs = [("system", SYSTEM + ctx.get("persona", PERSONA)), ("human", f"TASK: {goal}\nRECENT: {history[-8:]}\n{wrap_screen(screen)}")]
         if len(screen) < 200:  # text isn't enough: show the screenshot
             b64 = base64.b64encode(phone.shot()).decode()
             msgs[-1] = ("human", [{"type": "text", "text": msgs[-1][1]},
@@ -199,7 +199,7 @@ def run_task(phone: Phone, task_id: str, report: Report, ctx: dict, decide=None,
         try:
             res = phone.act(d, task_id, t["final"], None)  # no approval while preparing: final taps always stop
         except HardStop as hs:
-            report(task_id, t["agent"], f"Hard stop: “{hs.label or t['final']}” needs Rosa's yes", action=d.action,
+            report(task_id, t["agent"], f"Hard stop: “{hs.label or t['final']}” needs {ctx.get('name', 'Rosa')}'s yes", action=d.action,
                    target=hs.label, result="blocked", stop=True, shot=phone.shot())
             return "ready"
         except NeedHuman as nh:

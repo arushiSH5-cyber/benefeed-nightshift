@@ -13,6 +13,7 @@ import time
 import uuid
 from collections import defaultdict, deque
 from pathlib import Path
+from typing import Literal
 
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response
@@ -154,8 +155,26 @@ def status(owner: bool = Depends(is_owner)):
     }
 
 
+class Profile(BaseModel):
+    """The one-time setup form. Only practice-portal fields; never SSN, IDs or immigration status."""
+    model_config = ConfigDict(extra="forbid")
+    name: str = Field(default="Rosa", min_length=1, max_length=30, pattern=r"^[A-Za-zÀ-ÿ' .-]+$")
+    age: int = Field(default=68, ge=18, le=110)
+    city: str = Field(default="San Jose", min_length=1, max_length=40, pattern=r"^[A-Za-zÀ-ÿ' .-]+$")
+    household: int = Field(default=2, ge=1, le=12)
+    senior: Literal["Yes", "No"] = "Yes"
+    income: Literal["Under $2,500", "$2,500 to $5,000", "Over $5,000"] = "Under $2,500"
+    paystub: Literal["later", "attached"] = "later"
+    calltime: Literal["Mornings", "Afternoons"] = "Mornings"
+
+
+class StartBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    profile: Profile | None = None
+
+
 @app.post("/api/runs", dependencies=[Depends(limit("start")), Depends(require_owner)])
-def start_run():
+def start_run(body: StartBody | None = None):
     online, phone, device, _ = _runner_online()
     if not (online and phone):
         raise HTTPException(409, "The phone is offline. Showing a replay.")
@@ -167,6 +186,8 @@ def start_run():
         tasks=[TaskState(id=t) for t in TASK_IDS], steps=[], device="iPhone",
     ).model_dump()
     db.save_run(run)
+    if body and body.profile:
+        db.runner_set(f"profile:{run['id']}", body.profile.model_dump())
     return _public(run)
 
 
@@ -271,10 +292,10 @@ def runner_next():
         if r["status"] == "queued" and not db.stop_requested(r["id"]):
             r["status"] = "running"
             db.save_run(r)
-            return {"kind": "start", "run": _public(r)}
+            return {"kind": "start", "run": _public(r), "profile": db.runner_get(f"profile:{r['id']}")}
     for r in db.all_runs():
         if db.pending_approvals(r["id"]) and not db.stop_requested(r["id"]):
-            return {"kind": "resume", "run": _public(r), "approvals": db.pending_approvals(r["id"])}
+            return {"kind": "resume", "run": _public(r), "approvals": db.pending_approvals(r["id"]), "profile": db.runner_get(f"profile:{r['id']}")}
     return {"kind": "idle"}
 
 

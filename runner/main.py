@@ -56,7 +56,14 @@ def run(job: dict, pu: PhoneUse, device: str, saver: SqliteSaver):
     threading.Thread(target=watch_stop, args=(run_id, stop, done), daemon=True).start()
     phone = Phone(pu, device, os.environ.get("PORTAL_URL", SERVER).rstrip("/"), stop)
     set_status = lambda tid, s: http.patch(f"/api/runner/runs/{run_id}", json={"tasks": [{"id": tid, "status": s}]})
-    env = {"phone": phone, "report": reporter(run_id), "ctx": CTX, "set_status": set_status,
+    ctx = dict(CTX)
+    pr = job.get("profile")
+    if pr:  # the user's one-time setup form (validated by the server)
+        ctx["name"] = pr["name"]
+        ctx["persona"] = (f"{pr['name']}, {pr['age']}, {pr['city']}, household of {pr['household']} "
+                          f"(anyone 60+: {pr['senior']}), income {pr['income']} a month, best time to call: {pr['calltime']}, "
+                          f"pay stub: {'type later' if pr['paystub'] == 'later' else 'type attached'}.")
+    env = {"phone": phone, "report": reporter(run_id), "ctx": ctx, "set_status": set_status,
            "tasks": [t.strip() for t in os.environ.get("CREW_TASKS", "calfresh,cal,msg").split(",")]}
     graph = build(env).compile(checkpointer=saver)
     cfg = {"configurable": {"thread_id": run_id}, "run_name": f"night-shift {run_id}", "tags": ["benefeed"]}

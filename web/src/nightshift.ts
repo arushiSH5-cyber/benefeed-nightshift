@@ -221,8 +221,28 @@ function startPolling(id: string) {
   }, 1000);
 }
 
+// ---------- one-time setup: the details the crew types into the practice portal ----------
+export type Profile = { name: string; age: number; city: string; household: number; senior: "Yes" | "No";
+  income: "Under $2,500" | "$2,500 to $5,000" | "Over $5,000"; paystub: "later" | "attached"; calltime: "Mornings" | "Afternoons" };
+export function getProfile(): Profile | null {
+  try { const v = localStorage.getItem("bfns_profile"); return v ? JSON.parse(v) as Profile : null; } catch { return null; }
+}
+export function saveProfile(p: Profile) {
+  try { localStorage.setItem("bfns_profile", JSON.stringify(p)); } catch { /* private mode */ }
+}
+export function sampleProfile(): Profile {
+  const pick = <T,>(a: readonly T[]) => a[Math.floor(Math.random() * a.length)];
+  const age = 55 + Math.floor(Math.random() * 30);
+  return { name: pick(["Rosa", "Linh", "Maria", "James", "Amara", "Wei", "Dolores", "Sam"]), age,
+    city: pick(["San Jose", "Oakland", "Fresno", "Sacramento", "San Diego", "Los Angeles"]),
+    household: 1 + Math.floor(Math.random() * 5), senior: age >= 60 ? "Yes" : "No",
+    income: pick(["Under $2,500", "$2,500 to $5,000"] as const), paystub: pick(["later", "attached"] as const),
+    calltime: pick(["Mornings", "Afternoons"] as const) };
+}
+
 async function runLive() {
-  const run = await api("/api/runs", { method: "POST", body: "{}" }, (j) => Run.parse(j));
+  const profile = getProfile();
+  const run = await api("/api/runs", { method: "POST", body: JSON.stringify(profile ? { profile } : {}) }, (j) => Run.parse(j));
   set({ runs: S.runs + 1, log: [], film: {}, trace: {}, brief: false, on: true, agent: "fern" });
   applyRun(run);
   startPolling(run.id);

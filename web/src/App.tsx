@@ -589,11 +589,21 @@ function Crew({ ns, onAct, openSheet }: { ns: ReturnType<typeof NS.useNS>; onAct
         <div style={{ display: "grid", gap: 6, justifyItems: "end" }}><span className="nsb">🌙 DND on</span><ModeBadge mode={ns.mode} /></div>
       </div>
       <div className="crewrow">{Object.entries(AG).map(([k, a]) => <span key={k} className={ns.agent === k ? "on" : ""}><I h={cr(k)} style={{ display: "contents" }} />{a[0]}<small style={{ fontWeight: 400 }}>{a[1]}</small></span>)}</div>
-      <div className="phone-wrap" onPointerMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty("--ry", ((e.clientX - r.left) / r.width - 0.5) * 30 + "deg"); e.currentTarget.style.setProperty("--rx", (0.5 - (e.clientY - r.top) / r.height) * 20 + "deg"); }} onPointerLeave={(e) => { e.currentTarget.style.removeProperty("--ry"); e.currentTarget.style.removeProperty("--rx"); }}><Phone screen={ns.cur} badge={ns.mode === "live" ? "via PhoneUse · iPhone" : ns.source === "recording" ? "Replay of a real crew run" : "Replay · demo run"} /></div>
+      <div className="phone-wrap" onPointerMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty("--ry", ((e.clientX - r.left) / r.width - 0.5) * 30 + "deg"); e.currentTarget.style.setProperty("--rx", (0.5 - (e.clientY - r.top) / r.height) * 20 + "deg"); }} onPointerLeave={(e) => { e.currentTarget.style.removeProperty("--ry"); e.currentTarget.style.removeProperty("--rx"); }}><Phone screen={ns.cur} badge={ns.mode === "live" ? "via PhoneUse · cloud phone" : ns.source === "recording" ? "Replay of a real crew run" : "Replay · demo run"} /></div>
       <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
         {busy ? <button className="btn red wide" onClick={() => onAct("stop")}>■ Stop everything</button>
           : <><button className="btn" onClick={() => onAct("run")}>▶ Run night shift now</button>{r > 0 && <button className="btn ghost" onClick={() => openSheet({ k: "review" })}>Review ({r})</button>}</>}
       </div>
+      <Setup busy={busy} />
+      <div className="card"><b>How your crew uses the phone</b>
+        <ol className="note" style={{ margin: "8px 0 0", paddingLeft: 20, lineHeight: 1.6 }}>
+          <li><b>You tap Run.</b> Your details (above) go to our server with the job.</li>
+          <li><b>Pip leases a phone</b> from <b>PhoneUse</b>: a real Android phone in the cloud.</li>
+          <li><b>Bun looks at the screen:</b> PhoneUse sends a screenshot, and on-device text recognition reads the labels.</li>
+          <li><b>Claude picks one action</b> (tap, type or scroll) using only your details, never page text.</li>
+          <li><b>PhoneUse does it</b> on the phone, and the screenshot comes back here, live.</li>
+          <li><b>🔒 Submit is blocked in code</b> until you hold to approve.</li>
+        </ol></div>
       <div className="card"><b>Tonight's jobs</b>{TASKS.map((t) => <div className="row" key={t.id} style={{ gridTemplateColumns: "44px 1fr auto" }}><I className="ic" style={{ width: 44, height: 44 }} h={cr(t.ag).replace("<svg", '<svg style="width:38px;height:38px"')} /><div><b>{t.title}</b><small>{t.app} · stops at “{t.stop}”</small></div><StPill s={ns.st[t.id]} /></div>)}</div>
       <div className="card"><b>What happened, in plain words</b>
         <div className="log" style={{ marginTop: 8 }} aria-live="polite">{ns.log.length ? ns.log.map((l, i) => <div key={ns.log.length - i} className={"lg" + (l.stop ? " stop" : "") + (i === 0 && busy ? " new" : "")}><I h={cr(l.ag)} style={{ display: "contents" }} /><span>{l.stop ? "🔒 " : ""}{l.text}</span><small>{l.at}</small></div>) : <p className="note">Tap “Run night shift now” to watch your crew use the phone.</p>}</div></div>
@@ -608,6 +618,42 @@ function Crew({ ns, onAct, openSheet }: { ns: ReturnType<typeof NS.useNS>; onAct
       <div className="card"><p className="note" style={{ margin: 0 }}><b>Safety, in code:</b> the crew can't tap Submit, Send, Pay or Delete without your yes. It only opens Safari, Calendar and Messages. Text on a web page is never treated as an order. Stop works anytime.</p></div>
     </section>
   );
+}
+
+/** One-time setup: the details the crew types into the practice portal, instead of a made-up persona. */
+function Setup({ busy }: { busy: boolean }) {
+  const [p, setP] = useState<NS.Profile | null>(() => NS.getProfile());
+  const [edit, setEdit] = useState<NS.Profile | null>(() => (NS.getProfile() ? null : NS.sampleProfile()));
+  const f = edit;
+  const up = (k: keyof NS.Profile, v: string | number) => setEdit((e) => (e ? { ...e, [k]: v } as NS.Profile : e));
+  const ok = !!f && /^[A-Za-zÀ-ÿ' .-]{1,30}$/.test(f.name.trim()) && /^[A-Za-zÀ-ÿ' .-]{1,40}$/.test(f.city.trim()) && f.age >= 18 && f.age <= 110 && f.household >= 1 && f.household <= 12;
+  if (!f && p) return (
+    <div className="card"><b>Your details</b> <small className="note">· the crew types only these</small>
+      <p style={{ margin: "8px 0" }}>{p.name}, {p.age} · {p.city} · household of {p.household} · 60+: {p.senior} · {p.income}/month · pay stub: {p.paystub} · call: {p.calltime}</p>
+      <button className="btn ghost" disabled={busy} onClick={() => setEdit({ ...p })}>Edit details</button></div>);
+  if (!f) return null;
+  const opt = (k: keyof NS.Profile, vals: readonly string[]) => <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>{vals.map((v) => <button type="button" key={v} className={"mini" + (f[k] === v ? " on" : "")} aria-pressed={f[k] === v} onClick={() => up(k, v)} style={f[k] === v ? { background: "var(--ac, #6f84b4)", color: "#fff" } : undefined}>{v}</button>)}</div>;
+  const row = { display: "grid", gap: 4, marginTop: 10 } as const;
+  const inp = { width: "100%", fontSize: 17, padding: 10, borderRadius: 10, border: "1px solid #ccc", boxSizing: "border-box" } as const;
+  return (
+    <form className="card" aria-label="One-time setup" onSubmit={(e) => { e.preventDefault(); if (!ok) return; const c = { ...f, name: f.name.trim(), city: f.city.trim() }; NS.saveProfile(c); setP(c); setEdit(null); }}>
+      <b>One-time setup</b> <small className="note">· the crew fills the form with these details only. No SSN, no ID.</small>
+      <label style={row}>Your first name<input style={inp} value={f.name} maxLength={30} onChange={(e) => up("name", e.target.value)} /></label>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        <label style={row}>Age<input style={inp} type="number" min={18} max={110} value={f.age} onChange={(e) => up("age", +e.target.value)} /></label>
+        <label style={row}>People at home<input style={inp} type="number" min={1} max={12} value={f.household} onChange={(e) => up("household", +e.target.value)} /></label>
+      </div>
+      <label style={row}>City<input style={inp} value={f.city} maxLength={40} onChange={(e) => up("city", e.target.value)} /></label>
+      <div style={row}>Anyone 60 or older?{opt("senior", ["Yes", "No"])}</div>
+      <div style={row}>Money in each month{opt("income", ["Under $2,500", "$2,500 to $5,000", "Over $5,000"])}</div>
+      <div style={row}>Pay stub{opt("paystub", ["later", "attached"])}</div>
+      <div style={row}>Best time to call{opt("calltime", ["Mornings", "Afternoons"])}</div>
+      <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
+        <button className="btn" type="submit" disabled={!ok}>Save details</button>
+        <button className="btn ghost" type="button" onClick={() => setEdit(NS.sampleProfile())}>🎲 Fill with sample info</button>
+        {p && <button className="btn ghost" type="button" onClick={() => setEdit(null)}>Cancel</button>}
+      </div>
+    </form>);
 }
 
 /* ---------- plan + me ---------- */
