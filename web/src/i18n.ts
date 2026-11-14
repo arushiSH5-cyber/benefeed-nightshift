@@ -41,7 +41,7 @@ const FR: Record<string, string> = {
   "Swipe each filmstrip to see exactly what your crew did on your phone.": "Faites défiler chaque pellicule pour voir exactement ce que l'équipe a fait.",
   "Hold to submit": "Maintenir pour envoyer", "Hold to add": "Maintenir pour ajouter", "Hold to send": "Maintenir pour envoyer",
   "Keep holding…": "Continuez d'appuyer…", "Change": "Modifier", "See trace ↗": "Voir la trace ↗",
-  "How to apply": "Comment demander", "Sources": "Sources", "Who it's for": "Pour qui", "Save": "Garder", "Listen": "Écouter", "Send": "Envoyer",
+  "How to apply": "Comment demander", "🤖 Apply for me": "🤖 Demander pour moi", "Sources": "Sources", "Who it's for": "Pour qui", "Save": "Garder", "Listen": "Écouter", "Send": "Envoyer",
   "You likely qualify": "Vous êtes probablement éligible", "You might qualify": "Vous êtes peut-être éligible", "estimate": "estimation",
   "swipe up": "glissez vers le haut", "You're all caught up": "Vous êtes à jour", "Back to the top": "Retour en haut",
   "Open it on your phone": "Ouvrez-le sur votre téléphone", "How Night Shift works": "Comment fonctionne l'équipe de nuit",

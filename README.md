@@ -46,6 +46,12 @@ This is **not a mock-up**. It's a screen recording of a live run: **Claude, driv
 ▶ [Full video (MP4)](docs/live-automation.mp4). The same crew drives a **PhoneUse cloud phone** with `./demo.sh hosted`.
 <br clear="right">
 
+### 🤖 "Apply for me": from the feed to the phone
+1. On a program card in the feed, tap **🤖 Apply for me**. It's saved to My plan.
+2. First time only: a **one-time setup** form on the Crew screen asks for basic details (name, age, city, household, 60+, income, pay stub, call time). No SSN, no ID. **🎲 Fill with sample info** is there for demos. The server validates every field.
+3. The crew starts on the PhoneUse cloud phone and types **only those details** into the application, so there's no made-up persona. It stops at 🔒 Submit until you hold to approve.
+4. Today Bun can fill **SNAP / CalFresh** (on our practice portal). For other programs, "Apply for me" saves the program and opens the official way to apply.
+
 ### 📱 On a real PhoneUse cloud phone (Pixel 7 Pro, Android 13)
 ▶ **[Watch the cloud-phone run (65 s, on our website)](https://arushish5-cyber.github.io/benefeed-nightshift/about/#cloud-phone)**: real screenshots from the phone, with every tap the crew chose marked in red and the crew log on the right.
 

@@ -141,6 +141,18 @@ export default function App() {
 
   const nsAct = (a: string) => {
     if (a === "run") { go("crew"); NS.runNight(); }
+    if (a.startsWith("apply:")) {  // "Apply for me" on a feed card
+      const id = a.slice(6);
+      saveS((x) => (x.saved.includes(id) ? x : { ...x, saved: [...x.saved, id] }));
+      if (id === "snap") {  // the one application Bun can fill on the phone today (practice portal)
+        go("crew");
+        if (NS.getProfile()) { toast("Bun is applying for SNAP on the phone"); NS.runNight(); }
+        else { try { sessionStorage.setItem("bfns_apply", "snap"); } catch { /* */ } toast("Add your details once, then Bun applies for you"); }
+      } else {
+        toast("Saved to My plan. Bun can fill SNAP for you today; for this one, here's the official way to apply");
+        openSheet({ k: "details", id, t: "apply" });
+      }
+    }
     if (a === "stop") NS.stopRun();
     if (a === "review") openSheet({ k: "review" });
     if (a === "voice") briefing();
@@ -355,7 +367,7 @@ function Feed({ onQuiz, mode, u, s, M, ns, playing, setPlaying, onAct, openSheet
             <div className="info">
               <div className="who">{p.prog.split(" (")[0]} <I h={IC.check} style={{ display: "contents" }} /> {p.level && <span className="pill lvl">{LV[p.level]}</span>} <span className={"pill " + (m.level === "likely" ? "" : "maybe")}>{m.level === "likely" ? "You likely qualify" : "You might qualify"}</span></div>
               <p data-r>{p.what}</p>
-              <div className="ctas"><button className="cta" onClick={() => openSheet({ k: "details", id: p.id, t: "apply" })}>How to apply</button><button className="cta ghost" onClick={() => openSheet({ k: "details", id: p.id, t: "src" })}><I h={IC.doc} style={{ display: "contents" }} />Sources</button></div>
+              <div className="ctas"><button className="cta" onClick={() => onAct("apply:" + p.id)}>🤖 Apply for me</button><button className="cta ghost" onClick={() => openSheet({ k: "details", id: p.id, t: "apply" })}>How to apply</button><button className="cta ghost" onClick={() => openSheet({ k: "details", id: p.id, t: "src" })}><I h={IC.doc} style={{ display: "contents" }} />Sources</button></div>
             </div>
             <div className="rail">
               <button className="rb" aria-label="Who it's for" onClick={() => openSheet({ k: "details", id: p.id, t: "who" })}><I className="av" h={c.ic} /></button>
@@ -636,7 +648,9 @@ function Setup({ busy }: { busy: boolean }) {
   const row = { display: "grid", gap: 4, marginTop: 10 } as const;
   const inp = { width: "100%", fontSize: 17, padding: 10, borderRadius: 10, border: "1px solid #ccc", boxSizing: "border-box" } as const;
   return (
-    <form className="card" aria-label="One-time setup" onSubmit={(e) => { e.preventDefault(); if (!ok) return; const c = { ...f, name: f.name.trim(), city: f.city.trim() }; NS.saveProfile(c); setP(c); setEdit(null); }}>
+    <form className="card" aria-label="One-time setup" onSubmit={(e) => { e.preventDefault(); if (!ok) return; const c = { ...f, name: f.name.trim(), city: f.city.trim() }; NS.saveProfile(c); setP(c); setEdit(null);
+      let pend = null; try { pend = sessionStorage.getItem("bfns_apply"); sessionStorage.removeItem("bfns_apply"); } catch { /* */ }
+      if (pend) NS.runNight(); }}>
       <b>One-time setup</b> <small className="note">· the crew fills the form with these details only. No SSN, no ID.</small>
       <label style={row}>Your first name<input style={inp} value={f.name} maxLength={30} onChange={(e) => up("name", e.target.value)} /></label>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
