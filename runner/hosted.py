@@ -119,16 +119,33 @@ class HostedPhoneUse:
                     stack.append(n[k])
         return out
 
+    def _ocr(self, dev: str) -> list[dict]:
+        """This backend (adb_cloud) has no UI tree: read labels + boxes from the screenshot with Apple Vision."""
+        from . import ocr
+        return [{**e, "editable": False, "enabled": True} for e in ocr.read(self.screenshot(dev))]
+
+    def _clear_chrome_intro(self, dev: str) -> list[dict]:
+        """A fresh cloud phone shows Chrome's first-run screens on every lease: stay signed out / dismiss tips."""
+        seen = self._ocr(dev)
+        for _ in range(4):
+            hit = [n for n in seen if re.fullmatch(r"(stay signed out|no thanks|not now|got it|skip)", n["label"].strip(), re.I)]
+            if not hit:
+                break
+            self._tap_rect(dev, hit[0]["rect"])
+            time.sleep(2)
+            seen = self._ocr(dev)
+        return seen
+
     def _tap_rect(self, dev: str, r: dict):
         self._act("tap", dev, x=round(r["x"] + r["width"] / 2), y=round(r["y"] + r["height"] / 2))
 
     def action(self, dev: str, action: str, **p):
         if action == "source_fast":
-            nodes = self._flat(self._snapshot(dev))
+            nodes = self._ocr(dev)
             return "\n".join(f"[{n['label']}]{' (field)' if n['editable'] else ''}" for n in nodes)[:20000]
         if action == "find_elements":
             q = p["query"].lower()
-            hits = [n for n in self._flat(self._snapshot(dev)) if q in n["label"].lower()][:8]
+            hits = [n for n in self._ocr(dev) if q in n["label"].lower()][:8]
             els = []
             for n in hits:
                 eid = uuid.uuid4().hex[:12]
@@ -144,14 +161,23 @@ class HostedPhoneUse:
             time.sleep(0.4)
             return self._act("type_text", dev, text=p["text"])
         if action == "launch_app":
-            return self._act("open_app", dev, appId=APP_MAP.get(p["bundle_id"], p["bundle_id"]))
+            app = APP_MAP.get(p["bundle_id"], p["bundle_id"])
+            r = self._act("open_app", dev, appId=app)
+            if app == CHROME:
+                time.sleep(2)
+                self._clear_chrome_intro(dev)
+            return r
         if action == "open_url":  # Chrome: focus the address bar, type the URL, press enter
             self._act("open_app", dev, appId=CHROME)
-            time.sleep(1.2)
-            bar = [n for n in self._flat(self._snapshot(dev)) if re.search(r"search or type|address|url", n["label"], re.I)]
+            time.sleep(2)
+            seen = self._clear_chrome_intro(dev)
+            bar = [n for n in seen if re.search(r"search .*or type|type url|web address", n["label"], re.I)] or \
+                  [n for n in seen if n["rect"]["y"] < 160 and re.search(r"https?:|\.(io|com|org|gov)\b", n["label"], re.I)]
             if bar:
                 self._tap_rect(dev, bar[0]["rect"])
-            time.sleep(0.4)
+            else:
+                self._act("tap", dev, x=500, y=int(os.environ.get("CHROME_BAR_Y", "75")))
+            time.sleep(0.6)
             self._act("type_text", dev, text=p["url"])
             return self._act("press_key", dev, key="enter")
         if action == "tap":

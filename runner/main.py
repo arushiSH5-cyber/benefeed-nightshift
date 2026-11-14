@@ -54,7 +54,7 @@ def run(job: dict, pu: PhoneUse, device: str, saver: SqliteSaver):
     run_id = job["run"]["id"]
     stop, done = threading.Event(), threading.Event()
     threading.Thread(target=watch_stop, args=(run_id, stop, done), daemon=True).start()
-    phone = Phone(pu, device, SERVER, stop)
+    phone = Phone(pu, device, os.environ.get("PORTAL_URL", SERVER).rstrip("/"), stop)
     set_status = lambda tid, s: http.patch(f"/api/runner/runs/{run_id}", json={"tasks": [{"id": tid, "status": s}]})
     env = {"phone": phone, "report": reporter(run_id), "ctx": CTX, "set_status": set_status,
            "tasks": [t.strip() for t in os.environ.get("CREW_TASKS", "calfresh,cal,msg").split(",")]}

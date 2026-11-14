@@ -29,8 +29,8 @@ SAFARI, CAL, SMS = "com.apple.mobilesafari", "com.apple.mobilecal", "com.apple.M
 
 TASKS = {
     "calfresh": {"agent": "bun", "app": SAFARI, "final": "Submit",
-                 "goal": "Open the practice portal at {portal}/practice in Safari and fill all 4 screens from the persona, tapping Next after each. "
-                         "Dropdowns: pick the matching option. On Review, scroll down and tap Submit."},
+                 "goal": "Open the practice portal at {portal}/practice in the phone browser (Safari or Chrome, either is fine) and fill all 4 screens from the persona, tapping Next after each. "
+                         "Choices: tap the matching option text (find() matches visible text; tap a field label before typing). On Review, scroll down and tap Submit."},
     "cal": {"agent": "nimbus", "app": CAL, "final": "Add",
             "goal": "In Calendar, create an event 'Medi-Cal renewal' (sample date: Dec 1, 9:00 AM) with the note "
                     "'Official info: https://www.dhcs.ca.gov/services/medi-cal/Pages/Medi-CalRenewal.aspx (sample date)'. Then tap Add."},
@@ -183,7 +183,7 @@ def run_task(phone: Phone, task_id: str, report: Report, ctx: dict, decide=None,
         if len(screen) < 200:  # text isn't enough: show the screenshot
             b64 = base64.b64encode(phone.shot()).decode()
             msgs[-1] = ("human", [{"type": "text", "text": msgs[-1][1]},
-                                  {"type": "image", "source": {"type": "base64", "media_type": "image/png", "data": b64}}])
+                                  {"type": "image", "source": {"type": "base64", "media_type": "image/jpeg" if base64.b64decode(b64[:8])[:2] == b"\xff\xd8" else "image/png", "data": b64}}])
         try:
             d = decide.invoke(msgs)
             d = d if isinstance(d, Decision) else Decision.model_validate(d)
