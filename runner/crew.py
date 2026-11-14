@@ -208,7 +208,7 @@ def run_task(phone: Phone, task_id: str, report: Report, ctx: dict, decide=None,
         history.append(f"{d.action}({d.query or d.label or d.url or d.bundle_id or ''}) -> {res[:300]}")
         if d.action != "find":
             after = phone.observe()
-            ok = after != screen or d.action == "fill"
+            ok = after != screen or d.action in ("fill", "click")  # a radio tap changes pixels, not text
             fails = 0 if ok else fails + 1
             report(task_id, t["agent"], d.say, action=d.action, target=(d.label or d.query or d.url or "")[:200],
                    result="ok" if ok else "failed", shot=phone.shot())

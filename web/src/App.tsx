@@ -588,13 +588,13 @@ function Crew({ ns, onAct, openSheet }: { ns: ReturnType<typeof NS.useNS>; onAct
         <div><span className="lbl">night shift</span><h1 className="h1">{busy ? "Your crew is on your phone" : ns.brief ? "Waiting for your yes" : "Your crew"}</h1></div>
         <div style={{ display: "grid", gap: 6, justifyItems: "end" }}><span className="nsb">🌙 DND on</span><ModeBadge mode={ns.mode} /></div>
       </div>
+      <Setup busy={busy} />
       <div className="crewrow">{Object.entries(AG).map(([k, a]) => <span key={k} className={ns.agent === k ? "on" : ""}><I h={cr(k)} style={{ display: "contents" }} />{a[0]}<small style={{ fontWeight: 400 }}>{a[1]}</small></span>)}</div>
       <div className="phone-wrap" onPointerMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty("--ry", ((e.clientX - r.left) / r.width - 0.5) * 30 + "deg"); e.currentTarget.style.setProperty("--rx", (0.5 - (e.clientY - r.top) / r.height) * 20 + "deg"); }} onPointerLeave={(e) => { e.currentTarget.style.removeProperty("--ry"); e.currentTarget.style.removeProperty("--rx"); }}><Phone screen={ns.cur} badge={ns.mode === "live" ? "via PhoneUse · cloud phone" : ns.source === "recording" ? "Replay of a real crew run" : "Replay · demo run"} /></div>
       <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
         {busy ? <button className="btn red wide" onClick={() => onAct("stop")}>■ Stop everything</button>
           : <><button className="btn" onClick={() => onAct("run")}>▶ Run night shift now</button>{r > 0 && <button className="btn ghost" onClick={() => openSheet({ k: "review" })}>Review ({r})</button>}</>}
       </div>
-      <Setup busy={busy} />
       <div className="card"><b>How your crew uses the phone</b>
         <ol className="note" style={{ margin: "8px 0 0", paddingLeft: 20, lineHeight: 1.6 }}>
           <li><b>You tap Run.</b> Your details (above) go to our server with the job.</li>
