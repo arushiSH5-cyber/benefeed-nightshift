@@ -35,7 +35,7 @@ export function piiProblem(s: string): string | null {
 }
 
 type U = { done: boolean; who: string[]; inc: string; city: string; country?: "US" | "FR" | "UK"; night: boolean; big: boolean; calm: boolean };
-type SS = { liked: string[]; saved: string[]; clikes: string[]; myComments: Record<string, Comment[]>; myPosts: Post[] };
+type SS = { liked: string[]; saved: string[]; queue?: string[]; auto?: boolean; clikes: string[]; myComments: Record<string, Comment[]>; myPosts: Post[] };
 const DEF_U: U = { done: false, who: [], inc: "low", city: "San Jose", night: false, big: false, calm: false };
 const DEF_S: SS = { liked: [], saved: [], clikes: [], myComments: {}, myPosts: [] };
 
@@ -189,7 +189,7 @@ export default function App() {
             <Feed onQuiz={(tag, yes) => saveU({ who: [...u.who, yes ? tag : "no-" + tag] })} mode={feedMode} u={u} s={s} M={M} ns={ns} playing={playing} setPlaying={setPlaying}
               onAct={nsAct} openSheet={openSheet} toast={toast} saveS={saveS} />
           )}
-          {tab === "crew" && <Crew ns={ns} onAct={nsAct} openSheet={openSheet} />}
+          {tab === "crew" && <Crew ns={ns} onAct={nsAct} openSheet={openSheet} s={s} M={M} saveS={saveS} />}
           {tab === "plan" && <Plan s={s} go={go} openSheet={openSheet} ns={ns} />}
           {tab === "me" && <Me u={u} s={s} M={M} found={found} saveU={saveU} retake={() => setOnbStep(1)} toast={toast} />}
         </main>
@@ -368,7 +368,7 @@ function Feed({ onQuiz, mode, u, s, M, ns, playing, setPlaying, onAct, openSheet
               <div className="who">{p.prog.split(" (")[0]} <I h={IC.check} style={{ display: "contents" }} /> {p.level && <span className="pill lvl">{LV[p.level]}</span>} <span className={"pill " + (m.level === "likely" ? "" : "maybe")}>{m.level === "likely" ? "You likely qualify" : "You might qualify"}</span></div>
               <p data-r>{p.what}</p>
               {p.id === "snap" && ns.on && ns.log[0] && <div role="status" style={{ display: "flex", gap: 8, alignItems: "center", background: "rgba(111,132,180,.14)", borderRadius: 12, padding: "8px 10px", margin: "6px 0", fontSize: 14 }}><span style={{ width: 9, height: 9, borderRadius: 9, background: "#e05555", flex: "none", animation: "pulse 1s infinite" }} /><span><b>Bun is applying on the phone:</b> {ns.log[0].text}</span></div>}
-              <div className="ctas"><button className="cta" onClick={() => onAct("apply:" + p.id)}>{p.id === "snap" && ns.on ? "🤖 Watch Bun apply" : "🤖 Apply for me"}</button><button className="cta ghost" onClick={() => openSheet({ k: "details", id: p.id, t: "apply" })}>How to apply</button><button className="cta ghost" onClick={() => openSheet({ k: "details", id: p.id, t: "src" })}><I h={IC.doc} style={{ display: "contents" }} />Sources</button></div>
+              <div className="ctas"><button className="cta" onClick={() => onAct("apply:" + p.id)}>{p.id === "snap" && ns.on ? "🤖 Watch Bun apply" : "🤖 Apply for me"}</button><button className="cta ghost" aria-pressed={(s.queue || []).includes(p.id) || (!!s.auto && m.level === "likely")} onClick={() => { const on = (s.queue || []).includes(p.id); saveS((x) => ({ ...x, queue: on ? (x.queue || []).filter((k) => k !== p.id) : [...(x.queue || []), p.id] })); toast(on ? "Removed from tonight's queue" : "Queued: Bun applies tonight while you sleep"); }}>{(s.queue || []).includes(p.id) || (s.auto && m.level === "likely") ? "✓ Applying tonight" : "🌙 Apply tonight"}</button><button className="cta ghost" onClick={() => openSheet({ k: "details", id: p.id, t: "apply" })}>How to apply</button><button className="cta ghost" onClick={() => openSheet({ k: "details", id: p.id, t: "src" })}><I h={IC.doc} style={{ display: "contents" }} />Sources</button></div>
             </div>
             <div className="rail">
               <button className="rb" aria-label="Who it's for" onClick={() => openSheet({ k: "details", id: p.id, t: "who" })}><I className="av" h={c.ic} /></button>
@@ -593,7 +593,7 @@ function Change({ id, close, toast }: { id: string; close: () => void; toast: (m
 }
 
 /* ---------- crew ---------- */
-function Crew({ ns, onAct, openSheet }: { ns: ReturnType<typeof NS.useNS>; onAct: (a: string) => void; openSheet: (s: Sheet) => void }) {
+function Crew({ ns, onAct, openSheet, s, M, saveS }: { ns: ReturnType<typeof NS.useNS>; onAct: (a: string) => void; openSheet: (s: Sheet) => void; s: SS; M: Match[]; saveS: (f: (x: SS) => SS) => void }) {
   const busy = ns.on, r = NS.readyN();
   return (
     <section className="view" aria-label="Crew">
@@ -602,6 +602,7 @@ function Crew({ ns, onAct, openSheet }: { ns: ReturnType<typeof NS.useNS>; onAct
         <div style={{ display: "grid", gap: 6, justifyItems: "end" }}><span className="nsb">🌙 DND on</span><ModeBadge mode={ns.mode} /></div>
       </div>
       <Setup busy={busy} />
+      <Queue s={s} M={M} saveS={saveS} busy={busy} onAct={onAct} />
       <div className="crewrow">{Object.entries(AG).map(([k, a]) => <span key={k} className={ns.agent === k ? "on" : ""}><I h={cr(k)} style={{ display: "contents" }} />{a[0]}<small style={{ fontWeight: 400 }}>{a[1]}</small></span>)}</div>
       <div className="phone-wrap" onPointerMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty("--ry", ((e.clientX - r.left) / r.width - 0.5) * 30 + "deg"); e.currentTarget.style.setProperty("--rx", (0.5 - (e.clientY - r.top) / r.height) * 20 + "deg"); }} onPointerLeave={(e) => { e.currentTarget.style.removeProperty("--ry"); e.currentTarget.style.removeProperty("--rx"); }}><Phone screen={ns.cur} badge={ns.mode === "live" ? "via PhoneUse · cloud phone" : "shot" in ns.cur ? "Real run · PhoneUse cloud Pixel" : "Replay · demo run"} /></div>
       <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
@@ -632,6 +633,24 @@ function Crew({ ns, onAct, openSheet }: { ns: ReturnType<typeof NS.useNS>; onAct
     </section>
   );
 }
+
+/** What the agent will apply to tonight: tiles you queued, or every likely match when Auto-apply is on. */
+function Queue({ s, M, saveS, busy, onAct }: { s: SS; M: Match[]; saveS: (f: (x: SS) => SS) => void; busy: boolean; onAct: (a: string) => void }) {
+  const q = queueOf(s, M);
+  const toggleAuto = () => saveS((x) => ({ ...x, auto: !x.auto }));
+  return (
+    <div className="card"><div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+      <b>🌙 Tonight Bun will apply to</b>
+      <label style={{ display: "flex", gap: 6, alignItems: "center", fontSize: 14, fontWeight: 700 }}>Auto-apply<input type="checkbox" checked={!!s.auto} onChange={toggleAuto} aria-label="Auto-apply to every program I likely qualify for" /></label></div>
+      <small className="note">{s.auto ? "Auto-apply is on: every program you likely qualify for is queued." : "Tap “🌙 Apply tonight” on a card, or turn on Auto-apply."}</small>
+      {q.length ? q.map((id) => { const m = M.find((x) => x.p.id === id); if (!m) return null; const phone = id === "snap";
+        return <div className="row" key={id} style={{ gridTemplateColumns: "1fr auto", marginTop: 8 }}><div><b>{m.p.t}</b><small>{phone ? "🤖 Bun fills the application on the phone, then stops at Submit" : "📋 Bun prepares it: official link + documents list. You finish."}</small></div>
+          {!s.auto && <button className="mini" disabled={busy} onClick={() => saveS((x) => ({ ...x, queue: (x.queue || []).filter((k) => k !== id) }))}>Remove</button>}</div>; })
+        : <p className="note" style={{ margin: "8px 0 0" }}>Nothing queued yet.</p>}
+      {q.length > 0 && !busy && <button className="btn" style={{ marginTop: 12 }} onClick={() => onAct(q.includes("snap") ? "apply:snap" : "run")}>▶ Apply to {q.length} now</button>}
+    </div>);
+}
+const queueOf = (s: SS, M: Match[]) => (s.auto ? M.filter((m) => m.level === "likely").map((m) => m.p.id) : (s.queue || []).filter((id) => M.some((m) => m.p.id === id)));
 
 /** One-time setup: the details the crew types into the practice portal, instead of a made-up persona. */
 function Setup({ busy }: { busy: boolean }) {

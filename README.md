@@ -50,6 +50,8 @@ This is **not a mock-up**. It's a screen recording of a live run: **Claude, driv
 1. On a program card in the feed, tap **🤖 Apply for me**. It's saved to My plan.
 2. First time only: a **one-time setup** form on the Crew screen asks for basic details (name, age, city, household, 60+, income, pay stub, call time). No SSN, no ID. **🎲 Fill with sample info** is there for demos. The server validates every field.
 3. The crew starts on the PhoneUse cloud phone and types **only those details** into the application, so there's no made-up persona. It stops at 🔒 Submit until you hold to approve.
+**How the agent knows what to apply for:** tap **🌙 Apply tonight** on any tile to queue it, or turn on **Auto-apply** on the Crew screen to queue every program you likely qualify for. The Crew screen lists **"Tonight Bun will apply to"**, with what Bun does for each one.
+
 4. Today Bun can fill **SNAP / CalFresh** (on our practice portal). For other programs, "Apply for me" saves the program and opens the official way to apply.
 
 ### 📱 On a real PhoneUse cloud phone (Pixel 7 Pro, Android 13)
