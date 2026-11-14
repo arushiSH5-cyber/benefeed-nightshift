@@ -44,6 +44,18 @@ This is **not a mock-up**. It's a screen recording of a live run: **Claude, driv
 ▶ [Full video (MP4)](docs/live-automation.mp4). The same crew drives a **PhoneUse cloud phone** with `./demo.sh hosted`.
 <br clear="right">
 
+### 📱 On a real PhoneUse cloud phone (Pixel 7 Pro, Android 13)
+▶ **[Watch the cloud-phone run (MP4, 65 s)](docs/cloud-pixel-run.mp4)**: real screenshots from the phone, with every tap the crew chose marked in red and the crew log on the right.
+
+How it links to the app:
+1. You tap **Start** in the Benefeed app (owner link). The server queues a run.
+2. The runner (`runner/main.py`, a LangGraph crew) leases the cloud phone through **PhoneUse MCP** (`runner/hosted.py`).
+3. Each step: **screenshot → on-device OCR** (`runner/ocr.py`, Apple Vision, because this phone has no UI tree) **→ Claude picks one action → PhoneUse taps or types**.
+4. Every step and screenshot streams back to the app's **Crew** view.
+5. **Submit** is blocked in code (`runner/safety.py`) until you hold-to-approve in the app. In this run it stopped at Submit by itself after about 4.5 minutes.
+
+The practice portal it fills is static and public (`web/public/practice/`), so a cloud phone can reach it. It is clearly labelled *not a real agency*.
+
 ## 🎬 Demo videos
 **The 2½-minute story** with narration (problem → our real app → how it connects → 10 real automation steps → real portals & CAPTCHAs → human approval → why we stand out), English + French:
 ▶ **[Night theme](docs/benefeed-explainer-night.mp4)** · ▶ **[Light theme](docs/benefeed-explainer-light.mp4)**
