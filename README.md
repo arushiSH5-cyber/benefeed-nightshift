@@ -43,7 +43,7 @@ This is **not a mock-up**. It's a screen recording of a live run: **Claude, driv
 <br clear="right">
 
 ## 🎬 Demo videos
-**The 3-minute story** (problem → our real app → live automation → human approval → PhoneUse → why we stand out → what we built), in English + French:
+**The 2½-minute story** with narration (problem → our real app → how it connects → 10 real automation steps → real portals & CAPTCHAs → human approval → why we stand out), English + French:
 ▶ **[Night theme](docs/benefeed-explainer-night.mp4)** · ▶ **[Light theme](docs/benefeed-explainer-light.mp4)**
 
 Short cuts: ▶ **[Watch the demo (English, 21 s)](docs/demo-en.mp4)** · ▶ **[Voir la démo (Français, 18 s)](docs/demo-fr.mp4)**

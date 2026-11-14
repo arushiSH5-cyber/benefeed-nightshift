@@ -18,7 +18,7 @@ const cap = (en, fr) => `<rect x="0" y="${H - 250}" width="${W}" height="250" fi
 
 async function slide(name, inner) { await sharp(Buffer.from(theme(bg(inner)))).png().toFile(`${OUT}/${name}.png`); }
 async function screen(name, img, step, en, fr, angle = -6) {
-  const shot = await sharp(D + img).resize(330, 714).composite([{ input: Buffer.from(`<svg width="330" height="714"><rect width="330" height="714" rx="36" fill="none" stroke="#3e3b4f" stroke-width="14"/></svg>`) }])
+  const shot = await sharp(img.startsWith("/") ? img : D + img).resize(330, 714).composite([{ input: Buffer.from(`<svg width="330" height="714"><rect width="330" height="714" rx="36" fill="none" stroke="#3e3b4f" stroke-width="14"/></svg>`) }])
     .png().toBuffer();
   const tilted = await sharp(shot).rotate(angle, { background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
   const meta = await sharp(tilted).metadata();
@@ -74,4 +74,27 @@ ${[["Finds your help", "~", "~", "yes"], ["Fills the forms", "no", "no", "yes"],
 ${lines(["It doesn't chat. It does the work, safely.", "Elle ne discute pas : elle agit, en sécurité."], W / 2, 980, 28, "#ffd98a", 44, 700)}`);
 await slide("15b-done", `${tag("WHAT WE BUILT TODAY · BILAN", 140)}${[["3", "countries · pays"], ["30", "programs · aides"], ["25", "safety tests · tests"], ["11", "real steps, 1 live run"], ["0", "taps without your yes"]].map(([n, l], i) => `${T(200, 330 + i * 150, n, 92, "#ffd98a", 800, "end")}${T(240, 310 + i * 150, l, 30, "#ffffff", 700, "start")}`).join("")}
 ${lines(["Built solo, in one afternoon.", "Seule, en un après-midi."], W / 2, 1110, 30, "#b9c3ff", 44, 700)}`);
+// ---- automation, step by step, from the real run's screenshots ----
+const SD = process.env.STEPS_DIR;
+const STEPS = [
+  ["s03", "STEP 1 · OPEN THE WEBSITE", 'open_url("…/practice")', ["Opens the website in the phone's browser,", "exactly like a person would."], ["Ouvre le site dans le navigateur, comme vous."]],
+  ["s04", "STEP 2 · READ + TYPE", 'fill("How many people live with you?", "2")', ["Reads the labels on screen", "and types Rosa's answer."], ["Lit l'écran et tape la réponse de Rosa."]],
+  ["s05", "STEP 3 · DROPDOWN", 'fill("Anyone 60 or older?", "Yes")', ["Dropdowns too: picks “Yes”."], ["Les menus aussi : « Oui »."]],
+  ["s06", "STEP 4 · GUARD CHECK ✓", 'tap("Next")  → not final → allowed', ["“Next” isn't a final button,", "so the safety guard lets it tap."], ["« Suivant » n'est pas final : autorisé."]],
+  ["s07", "STEP 5 · INCOME", 'fill("Money in each month", "Under $2,500")', ["Page 2: income from Rosa's answers."], ["Page 2 : les revenus de Rosa."]],
+  ["s08", "STEP 6 · NO FAKE DOCUMENTS", 'fill("Pay stub", "later")', ["No pay stub yet, so it writes “later”.", "It never invents documents."], ["Pas de fiche de paie : « plus tard »."]],
+  ["s10", "STEP 7 · CONTACT", 'fill("City", "San Jose")', ["Page 3: contact. Never an SSN."], ["Page 3 : contact. Jamais de n° de sécu."]],
+  ["s11", "STEP 8 · DROPDOWN", 'fill("Best time to call", "Mornings")', ["Best time to call: mornings."], ["Meilleur moment : le matin."]],
+  ["s13", "STEP 9 · 🔒 HARD STOP", 'tap("Submit")  → FINAL → HardStop → interrupt()', ["It tries “Submit”. The guard blocks it", "and LangGraph pauses the whole run."], ["Bloqué : l'équipe attend votre oui."]],
+  ["s14", "STEP 10 · AFTER YOUR YES", 'approval #1 → tap("Submit") → tap("Confirm")', ["Only after Rosa holds to approve:", "Submit, Confirm. Saved."], ["Après votre oui seulement : envoyé."]],
+];
+if (SD) for (const [id, tg, cmd, en, fr] of STEPS) {
+  await screen("step-" + id, `${SD}/${id}.png`, tg, en, fr, 0);
+  const img = await sharp(`${OUT}/step-${id}.png`).composite([{ input: Buffer.from(theme(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="70"><rect x="30" y="8" width="${W - 60}" height="54" rx="14" fill="#0c1124" opacity=".92"/><text x="${W / 2}" y="44" font-family="Menlo, monospace" font-size="19" fill="#86dbb4" text-anchor="middle">${esc(cmd)}</text></svg>`)), left: 0, top: 960 }]).toBuffer();
+  await sharp(img).toFile(`${OUT}/step-${id}.png`);
+}
+await slide("10a-connect", `${tag("HOW IT CONNECTS · LA CONNEXION", 140)}${lines(["No API. No backdoor.", "It uses the website like you do."], W / 2, 250, 36, "#ffffff", 48)}${lines(["Pas d'API cachée : il utilise le site comme vous."], W / 2, 370, 25, "#b9c3ff", 34, 600, "middle", true)}
+${box([["1. A real phone (PhoneUse)", "opens the site in its normal browser", "un vrai téléphone, un vrai navigateur"], ["2. Reads the screen", "labels, fields, buttons (UI tree) + a screenshot", "lit les champs et les boutons"], ["3. Claude picks ONE action", "type, pick, tap, scroll: validated JSON", "une seule action à la fois"], ["4. PhoneUse taps & types", "then a fresh look to check it worked", "puis revérifie l'écran"]], 420, 170)}`);
+await slide("10d-real", `${tag("REAL PORTALS · LES VRAIS SITES", 140)}${box([["Same steps on a real site", "e.g. BenefitsCal: open, read, fill, stop", "mêmes étapes sur un vrai site"], ["You log in yourself", "the crew never sees or stores passwords", "vous vous connectez vous-même"], ["CAPTCHA, 2FA code, ID upload?", "it stops and hands the phone back to you", "CAPTCHA ? Il vous rend la main"], ["Final Submit = your yes", "always, enforced in code", "l'envoi final = votre oui"]], 230, 175)}
+${lines(["Today's demo uses a practice portal:", "no fake data ever goes to a real agency."], W / 2, 1000, 26, "#ffd98a", 40, 700)}`);
 console.log("frames ok");
