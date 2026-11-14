@@ -10,7 +10,7 @@ A crew of four AI helpers works overnight **on a real phone**. They fill in a be
 
 [**🌐 Project website (3D)**](https://arushish5-cyber.github.io/benefeed-nightshift/about/) · [**▶ Open the app**](https://arushish5-cyber.github.io/benefeed-nightshift/?demo)
 
-> 🎬 **Judges: our demo video is on our project website.** Open the [**project website → Video**](https://arushish5-cyber.github.io/benefeed-nightshift/about/#video) to watch it. The real cloud-phone run is [here (MP4)](docs/cloud-pixel-run.mp4).
+> 🎬 **Judges: our demo video is on our project website.** Open the [**project website → Video**](https://arushish5-cyber.github.io/benefeed-nightshift/about/#video) to watch it. The real cloud-phone automation video is right under it: [**▶ watch it here**](https://arushish5-cyber.github.io/benefeed-nightshift/about/#cloud-phone).
 
 [<img src="docs/video-poster.jpg" width="260" alt="▶ Watch the 2½-minute video">](https://arushish5-cyber.github.io/benefeed-nightshift/about/#video)<br><sub>▶ Click to watch the 2½-minute narrated video</sub>
 
@@ -47,7 +47,7 @@ This is **not a mock-up**. It's a screen recording of a live run: **Claude, driv
 <br clear="right">
 
 ### 📱 On a real PhoneUse cloud phone (Pixel 7 Pro, Android 13)
-▶ **[Watch the cloud-phone run (MP4, 65 s)](docs/cloud-pixel-run.mp4)**: real screenshots from the phone, with every tap the crew chose marked in red and the crew log on the right.
+▶ **[Watch the cloud-phone run (65 s, on our website)](https://arushish5-cyber.github.io/benefeed-nightshift/about/#cloud-phone)**: real screenshots from the phone, with every tap the crew chose marked in red and the crew log on the right.
 
 How it links to the app:
 1. You tap **Start** in the Benefeed app (owner link). The server queues a run.
